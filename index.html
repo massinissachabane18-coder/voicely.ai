@@ -110,32 +110,6 @@
   .field::placeholder { color: #6b6c73; }
   select.field option { background: #14151A; }
 
-  /* ===== 3D hero stage (inspired by floating-coin product heroes) ===== */
-  .stage3d { position: relative; perspective: 1600px; perspective-origin: 50% 40%; }
-  .p3d { transform-style: preserve-3d; will-change: transform; }
-  .phone3d { position: relative; transform-style: preserve-3d; }
-  .phone3d .iphone { position: relative; transform: translateZ(8px); }
-  .phone-edge { position: absolute; inset: 0; border-radius: 54px; background: linear-gradient(145deg, #4a4b55, #101115 45%, #33343c); }
-  .glare { position: absolute; inset: 0; border-radius: 54px; pointer-events: none; transform: translateZ(10px);
-    background: linear-gradient(var(--ga, 115deg), rgba(255,255,255,0) 35%, rgba(255,255,255,.16) 48%, rgba(255,255,255,0) 60%); mix-blend-mode: screen; }
-  .floor { position: absolute; left: 50%; bottom: -120px; width: 2400px; height: 900px; margin-left: -1200px; transform: rotateX(76deg); transform-origin: 50% 100%; pointer-events: none;
-    -webkit-mask-image: radial-gradient(50% 60% at 50% 80%, #000 20%, transparent 75%); mask-image: radial-gradient(50% 60% at 50% 80%, #000 20%, transparent 75%); overflow: hidden; }
-  .floor-grid { position: absolute; inset: -80px 0 0; animation: floorMove 6s linear infinite;
-    background-image: linear-gradient(rgba(24,200,232,.22) 1px, transparent 1px), linear-gradient(90deg, rgba(40,121,219,.18) 1px, transparent 1px); background-size: 80px 80px; }
-  @keyframes floorMove { to { transform: translateY(80px); } }
-  .floor-beam { position: absolute; top: 0; bottom: 0; width: 3px; background: linear-gradient(180deg, transparent, rgba(24,200,232,.9), transparent); filter: blur(1px); opacity: .7; }
-  .ground-shadow { position: absolute; left: 50%; bottom: -34px; width: 260px; height: 40px; margin-left: -130px; border-radius: 50%; background: radial-gradient(closest-side, rgba(0,0,0,.75), transparent); }
-  .coin { position: absolute; left: 50%; top: 50%; width: var(--d); height: var(--d); margin: calc(var(--d) / -2) 0 0 calc(var(--d) / -2); transform-style: preserve-3d; pointer-events: none; }
-  .coin .body { position: absolute; inset: 0; transform-style: preserve-3d; }
-  .coin .rim { position: absolute; inset: 0; border-radius: 50%; background: linear-gradient(135deg, #c9d3e4, #5d6880 50%, #aab6cc); }
-  .coin .face { position: absolute; inset: 0; border-radius: 50%; display: grid; place-items: center; transform: translateZ(calc(var(--t) / 2));
-    background: radial-gradient(circle at 32% 26%, #ffffff 0, #e9eef7 16%, #b4bfd2 42%, #eef2f9 66%, #8b97ae 100%);
-    box-shadow: inset 0 0 0 calc(var(--d) * .06) rgba(255,255,255,.55), inset 0 0 0 calc(var(--d) * .075) rgba(90,104,130,.5), inset 0 -8px 18px rgba(40,50,80,.35); }
-  .coin .face::after { content: ""; position: absolute; inset: 0; border-radius: 50%; background: linear-gradient(var(--ga, 115deg), transparent 30%, rgba(255,255,255,.65) 47%, transparent 62%); mix-blend-mode: soft-light; }
-  .coin .back { transform: translateZ(calc(var(--t) / -2)) rotateY(180deg); }
-  .coin svg { width: 46%; height: 46%; color: var(--c); filter: drop-shadow(0 1px 0 rgba(255,255,255,.8)) drop-shadow(0 -1px 1px rgba(0,0,0,.35)); }
-  .coin.glow .face { box-shadow: inset 0 0 0 calc(var(--d) * .06) rgba(255,255,255,.55), inset 0 0 0 calc(var(--d) * .075) rgba(90,104,130,.5), 0 0 40px rgba(24,200,232,.45); }
-
   /* ===== Arrow-fill button (ported from Hyperiux Vault ArrowFillButton) ===== */
   .afb { --h: 3.4rem; --c: 2.6rem; --r: .4rem; --y: calc((var(--h) - var(--c)) / 2); --pad: 1.7rem; --ease: cubic-bezier(.785,.135,.15,.86);
     position: relative; isolation: isolate; display: inline-flex; align-items: center; height: var(--h); padding-inline: var(--pad) calc(var(--c) + var(--r) + 1.1rem);
@@ -261,21 +235,11 @@
 
   <!-- Phone stage -->
   <div class="rise relative mx-auto mt-6 max-w-6xl px-4 md:px-6" style="--i:4" id="product">
-    <div class="stage3d flex h-[760px] items-center justify-center" id="stage">
-      <!-- glowing perspective floor -->
-      <div class="floor" aria-hidden="true">
-        <div class="floor-grid"></div>
-        <span class="floor-beam" style="left:38%"></span><span class="floor-beam" style="left:52%;opacity:.45"></span><span class="floor-beam" style="left:63%"></span>
-      </div>
+    <div class="relative flex h-[720px] items-center justify-center" id="stage">
       <div aria-hidden="true" class="pointer-events-none absolute left-1/2 top-1/2 h-[520px] w-[520px] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-70 blur-3xl" style="background: radial-gradient(closest-side, rgba(112,41,201,.55), rgba(40,121,219,.25) 55%, transparent);"></div>
 
-    <div id="scene" class="p3d relative flex h-full w-full items-center justify-center">
-      <!-- floating 3D logo coins -->
-      <div id="coins" class="p3d pointer-events-none absolute inset-0" aria-hidden="true"></div>
-      <div id="groundShadow" class="ground-shadow" aria-hidden="true" style="bottom:40px"></div>
-
       <!-- side card: lead -->
-      <div class="absolute start-0 top-[150px] z-20 hidden lg:block xl:start-6" style="transform: translateZ(110px)">
+      <div class="absolute start-0 top-[150px] z-20 hidden lg:block xl:start-6">
       <div id="sideLead" class="side card w-[19rem] rounded-2xl p-5 text-start">
         <div class="flex items-center justify-between">
           <p class="text-[.8rem] font-semibold text-white/50" data-i18n="lead_h">New lead</p>
@@ -291,9 +255,8 @@
       </div>
       </div>
 
-      <!-- iPhone (3D) -->
-      <div id="phone3d" class="phone3d p3d z-10">
-      <div id="phoneEdges" class="p3d absolute inset-0" aria-hidden="true"></div>
+      <!-- iPhone -->
+      <div class="relative z-10">
       <div class="iphone" role="img" aria-label="Animated WhatsApp conversation where an AI assistant for Smile Dental Care answers a patient and books a teeth whitening appointment">
         <div class="screen">
           <div class="island"></div>
@@ -318,11 +281,10 @@
           </div>
         </div>
       </div>
-      <div id="glare" class="glare" aria-hidden="true"></div>
       </div>
 
       <!-- side card: booking -->
-      <div class="absolute end-0 top-[300px] z-20 hidden lg:block xl:end-6" style="transform: translateZ(70px)">
+      <div class="absolute end-0 top-[300px] z-20 hidden lg:block xl:end-6">
       <div id="sideBook" class="side card w-[19rem] rounded-2xl p-5 text-start">
         <div class="flex items-center justify-between">
           <p class="text-[.8rem] font-semibold text-white/50" data-i18n="book_h">Appointment</p>
@@ -339,7 +301,6 @@
         </ul>
       </div>
       </div>
-    </div>
     </div>
 
     <div class="mt-8 flex flex-wrap items-center justify-center gap-3 text-sm text-white/50">
@@ -518,7 +479,7 @@
       <p class="font-semibold text-white" data-i18n="ab_p1">Your clients message at 11 PM, on a Sunday, in three languages at once. They book with whoever answers first.</p>
       <p class="mt-5" data-i18n="ab_p2">We started Voicely.ai to make sure that's you. We build AI systems with n8n, Retell AI, OpenAI and the WhatsApp and Instagram APIs, and we stay with you after launch to keep them improving.</p>
       <div class="mt-8 flex items-center gap-3">
-        <span class="grid h-11 w-11 flex-none place-items-center rounded-full grad-bg font-display font-extrabold" aria-hidden="true" dir="ltr">MC</span>
+        <span class="block h-14 w-14 flex-none rounded-full grad-bg p-[2px]"><img src="assets/massinissa.jpg" alt="" width="52" height="52" loading="lazy" class="h-full w-full rounded-full object-cover"></span>
         <span class="leading-tight"><span class="block font-semibold text-white" data-i18n="ab_name">Massinissa Chabane</span><span class="text-sm text-white/45" data-i18n="ab_role">Founder, Voicely.ai</span></span>
       </div>
     </div>
@@ -685,7 +646,7 @@ const T = {
     ab_t: 'مصمم للأعمال التي تعيش في الرسائل.',
     ab_p1: 'عملاؤك يراسلونك الساعة 11 ليلاً، يوم الأحد، وبثلاث لغات في آن واحد. ويحجزون مع من يرد أولاً.',
     ab_p2: 'أسسنا Voicely.ai لنتأكد أنك أنت من يرد أولاً. نبني أنظمة ذكاء اصطناعي باستخدام n8n وRetell AI وOpenAI وواجهات واتساب وإنستغرام، ونبقى معك بعد الإطلاق لتحسينها باستمرار.',
-    ab_name: 'ماسينيسا شابان', ab_role: 'مؤسس Voicely.ai',
+    ab_name: 'مسينيسا شعبان', ab_role: 'مؤسس Voicely.ai',
     cta_t: 'احجز مكالمتك الاستكشافية المجانية.', cta_s: 'اختر الوقت الذي يناسبك. في 30 دقيقة ندرس رسائلك ومكالماتك ونريك بالضبط ما يمكن لوكيل الذكاء الاصطناعي أن يتولاه عنك.', bk_1: 'مجانية وبلا أي التزام', bk_2: 'خطة مبنية على عيادتك أو متجرك', bk_3: 'بالعربية أو الفرنسية أو الإنجليزية', cal_fb1: 'التقويم لا يظهر؟', cal_fb2: 'افتح صفحة الحجز', cal_m_t: 'مكالمة استكشافية لمدة 30 دقيقة', cal_m_d: 'مجانية عبر Google Meet. اختر اليوم والوقت المناسبين لك.', cal_m_cta: 'اختر موعداً', b2_pw: 'مدعوم بـ',
     ft_tag: 'وكلاء ذكاء اصطناعي للأعمال التي تبيع عبر الرسائل والهاتف.', ft_c1: 'المنتج', ft_c2: 'الشركة', ft_c3: 'تواصل', ft_l1: 'مساعد الرسائل', ft_l2: 'الوكلاء الصوتيون', ft_loc: 'وكالة ذكاء اصطناعي',
     script: [
@@ -852,59 +813,6 @@ function restartDemo() {
   timers.push(setTimeout(restartDemo, at + 6000));
 }
 $('replay').addEventListener('click', restartDemo);
-
-/* ================= 3D hero: coins, phone, scene ================= */
-const COINS = [
-  { s: 'whatsapp',       c: '#25D366', x: -330, y: -330, z: 120,  d: 98,  rx: 14,  ry: -30, glow: 1 },
-  { s: 'instagram',      c: '#E4405F', x: 330,  y: -285, z: 60,   d: 108, rx: -8,  ry: 32 },
-  { s: 'n8n',            c: '#EA4B71', x: -395, y: 235,  z: 30,   d: 112, rx: -12, ry: 26 },
-  { s: 'openai',         c: '#1A1B21', x: 265,  y: 285,  z: 150,  d: 100, rx: 10,  ry: -24, glow: 1 },
-  { s: 'googlecalendar', c: '#4285F4', x: -205, y: 175,  z: 230,  d: 78,  rx: -6,  ry: 34 },
-  { s: 'retell-mark',    c: '#1A1B45', x: 520,  y: -170, z: -230, d: 82,  rx: 8,   ry: -36 },
-  { s: 'messenger',      c: '#0099FF', x: -540, y: -260, z: -260, d: 72,  rx: 12,  ry: 28 },
-  { s: 'shopify',        c: '#5E8E3E', x: 115,  y: -335, z: -300, d: 66,  rx: -14, ry: -18 },
-];
-const stage = $('stage'), scene = $('scene'), phone = $('phone3d'), glare = $('glare'), gshadow = $('groundShadow');
-const coinEls = COINS.map((k, i) => {
-  const el = document.createElement('div');
-  el.className = 'coin' + (k.glow ? ' glow' : '');
-  const t = Math.round(k.d * .13);
-  el.style.cssText = `--d:${k.d}px;--t:${t}px;--c:${k.c}`;
-  let rims = '';
-  for (let j = 0; j <= 8; j++) rims += `<div class="rim" style="transform:translateZ(${(-t / 2 + (t * j) / 8).toFixed(1)}px)"></div>`;
-  const logo = `<svg aria-hidden="true"><use href="#lg-${k.s}"/></svg>`;
-  el.innerHTML = `<div class="body">${rims}<div class="face">${logo}</div><div class="face back">${logo}</div></div>`;
-  $('coins').appendChild(el);
-  return { el, k, ph: i * 1.7 };
-});
-// phone thickness: stacked frame layers behind the screen
-(function () { let e = ''; for (let i = 0; i < 8; i++) e += `<div class="phone-edge" style="transform:translateZ(${6 - i * 2}px)"></div>`; $('phoneEdges').innerHTML = e; })();
-
-let tx = 0, ty = 0, mx = 0, my = 0, heroVisible = true;
-const finePointer = matchMedia('(pointer: fine)').matches;
-if (finePointer) addEventListener('pointermove', e => { tx = (e.clientX / innerWidth - .5) * 2; ty = (e.clientY / innerHeight - .5) * 2; }, { passive: true });
-new IntersectionObserver(([en]) => { heroVisible = en.isIntersecting; if (heroVisible && !reduce) requestAnimationFrame(frame); }).observe(stage);
-
-function render(t) {
-  mx += (tx - mx) * .06; my += (ty - my) * .06;
-  const r = stage.getBoundingClientRect();
-  const p = Math.min(1, Math.max(0, (innerHeight - r.top) / (innerHeight + r.height))) - .45; // scroll position through the stage
-  const W = stage.clientWidth, narrow = W < 700, f = Math.min(1, W / 1100), sf = narrow ? .6 : Math.max(.62, f);
-  scene.style.transform = `rotateY(${(mx * 9).toFixed(2)}deg) rotateX(${(-my * 5).toFixed(2)}deg)`;
-  const fl = Math.sin(t / 1400);
-  phone.style.transform = `translateY(${(fl * 10).toFixed(2)}px) rotateY(${(Math.sin(t / 2600) * 9 + mx * 8).toFixed(2)}deg) rotateX(${(Math.cos(t / 3000) * 3 - my * 4 + p * 26).toFixed(2)}deg) rotateZ(${(Math.sin(t / 3400) * 1.2).toFixed(2)}deg)`;
-  glare.style.setProperty('--ga', `${(105 + mx * 40 + p * 50 + Math.sin(t / 2600) * 12).toFixed(1)}deg`);
-  gshadow.style.transform = `scale(${(1 - fl * .1).toFixed(3)})`; gshadow.style.opacity = (.85 - fl * .15).toFixed(2);
-  coinEls.forEach(({ el, k, ph }) => {
-    const ry = k.ry + Math.sin(t / 2300 + ph) * 26 + mx * 14;
-    const cx = narrow ? Math.sign(k.x) * (W / 2 - 14 - (Math.abs(k.x) > 450 ? 18 : 0)) : k.x * f, cz = narrow ? -160 : k.z;
-    el.style.transform = `translate3d(${cx.toFixed(1)}px, ${(k.y * (narrow ? .9 : f) + Math.sin(t / 1700 + ph) * 10).toFixed(1)}px, ${cz}px) rotateY(${ry.toFixed(2)}deg) rotateX(${(k.rx + Math.cos(t / 2600 + ph) * 12 - my * 6).toFixed(2)}deg) scale(${sf})`;
-    el.style.setProperty('--ga', `${(110 + ry * 1.4).toFixed(1)}deg`);
-  });
-}
-function frame(t) { render(t); if (heroVisible && !reduce) requestAnimationFrame(frame); }
-render(0);
-if (!reduce) requestAnimationFrame(frame);
 
 /* ================= Cal.com booking =================
    Desktop: inline calendar. Phones: Cal.com squeezes its inline embed, so show a card that opens the booking page. */
