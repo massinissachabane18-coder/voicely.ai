@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Voicely.ai | AI DM Setters, Voice Agents & Automation</title>
+<meta name="description" content="Voicely.ai builds AI DM setters, voice receptionists and automations that answer every lead in seconds and book appointments automatically.">
+<link rel="icon" href="my_brand_guideline/logoss.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Manrope:wght@400;500;600;700&family=Cairo:wght@600;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          cyan: { DEFAULT: '#18C8E8' },
+          ocean: { DEFAULT: '#2879DB' },
+          violet: { DEFAULT: '#7029C9' },
+          ink: { DEFAULT: '#24252B' },
+          mist: { DEFAULT: '#A6A7AD' },
+          night: { DEFAULT: '#0E0F13', 1: '#14151A', 2: '#1A1B21', 3: '#22232B' },
+        },
+        fontFamily: {
+          display: ['Montserrat', 'Cairo', 'sans-serif'],
+          body: ['Manrope', '"IBM Plex Sans Arabic"', 'sans-serif'],
+        },
+      },
+    },
+  };
+</script>
+<style>
+  :root {
+    --grad: linear-gradient(90deg, #18C8E8 0%, #2879DB 50%, #7029C9 100%);
+    --spring: cubic-bezier(.34, 1.56, .64, 1);
+    --ease-out: cubic-bezier(.22, 1, .36, 1);
+    --line: rgba(255, 255, 255, .08);
+    --sh-2: 0 1px 0 rgba(255,255,255,.04) inset, 0 12px 32px -12px rgba(0,0,0,.6), 0 24px 60px -30px rgba(40,121,219,.25);
+    --sh-3: 0 40px 80px -20px rgba(0,0,0,.7), 0 30px 120px -20px rgba(112,41,201,.45), 0 10px 60px -10px rgba(24,200,232,.25);
+  }
+  html { scroll-behavior: smooth; scroll-padding-top: 80px; }
+  body { background: #0E0F13; color: #fff; line-height: 1.7; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+  h1, h2, h3, .font-display { letter-spacing: -0.03em; line-height: 1.08; }
+  :lang(ar) h1, :lang(ar) h2, :lang(ar) h3, :lang(ar) .font-display { letter-spacing: 0; line-height: 1.35; }
+  @media (min-width: 1024px) { :lang(ar) h1 { font-size: 3.6rem; } }
+
+  .grad-text { background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .grad-bg { background: var(--grad); }
+  [dir="rtl"] .grad-text, [dir="rtl"] .grad-bg { background-image: linear-gradient(270deg, #18C8E8 0%, #2879DB 50%, #7029C9 100%); }
+
+  /* Surfaces: base → card → floating */
+  .card { background: #14151A; border: 1px solid var(--line); box-shadow: var(--sh-2); }
+  .card-2 { background: #1A1B21; border: 1px solid var(--line); }
+  .hl { background: linear-gradient(180deg, rgba(40,121,219,.13), rgba(112,41,201,.07)); }
+  .grad-border { border: 1px solid transparent; background: linear-gradient(#16171D, #16171D) padding-box, var(--grad) border-box; }
+
+  .grain::after { content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 60; opacity: .06;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+
+  /* Interaction states: transform/opacity only */
+  .press { transition: transform .45s var(--spring); }
+  .press:hover { transform: translateY(-2px); }
+  .press:active { transform: translateY(0) scale(.97); transition-duration: .12s; }
+  .btn-primary { position: relative; isolation: isolate; color: #fff; background: var(--grad); box-shadow: 0 10px 28px -10px rgba(112,41,201,.7); }
+  [dir="rtl"] .btn-primary { background-image: linear-gradient(270deg, #18C8E8, #2879DB, #7029C9); }
+  .btn-primary::after { content: ""; position: absolute; inset: 0; border-radius: inherit; z-index: -1; box-shadow: 0 16px 44px -8px rgba(112,41,201,.8), 0 6px 22px -6px rgba(24,200,232,.6); opacity: 0; transition: opacity .35s var(--ease-out); }
+  .btn-primary:hover::after { opacity: 1; }
+  .btn-ghost { position: relative; isolation: isolate; background: rgba(255,255,255,.06); color: #fff; border: 1px solid rgba(255,255,255,.12); }
+  .btn-ghost::before { content: ""; position: absolute; inset: 0; z-index: -1; border-radius: inherit; background: rgba(255,255,255,.07); opacity: 0; transition: opacity .25s; }
+  .btn-ghost:hover::before { opacity: 1; }
+  .lift { transition: transform .5s var(--spring); }
+  .lift:hover { transform: translateY(-4px); }
+  .link-u { position: relative; transition: opacity .2s; }
+  .link-u::after { content: ""; position: absolute; inset-inline: 0; bottom: -3px; height: 1.5px; border-radius: 2px; background: var(--grad); transform: scaleX(0); transform-origin: var(--o, left); transition: transform .4s var(--ease-out); }
+  [dir="rtl"] .link-u::after { --o: right; }
+  .link-u:hover::after, .link-u:focus-visible::after { transform: scaleX(1); }
+  .link-u:active { opacity: .6; }
+  :focus-visible { outline: none; }
+  a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+    box-shadow: 0 0 0 3px #0E0F13, 0 0 0 5px #2879DB, 0 0 0 8px rgba(112,41,201,.3); border-radius: 12px; }
+
+  /* iPhone + WhatsApp mock */
+  .iphone { width: 310px; max-width: 100%; border-radius: 54px; padding: 11px; background: linear-gradient(145deg, #3a3b44, #15161b 40%, #2b2c33); box-shadow: var(--sh-3), 0 0 0 1px rgba(255,255,255,.08) inset; }
+  .iphone .screen { position: relative; border-radius: 44px; overflow: hidden; height: 640px; background: #0B141A; display: flex; flex-direction: column; }
+  .island { position: absolute; top: 10px; left: 50%; width: 96px; height: 28px; margin-left: -48px; border-radius: 20px; background: #000; z-index: 5; }
+  .wa-bg { background-color: #0B141A; background-image: radial-gradient(rgba(255,255,255,.035) 1px, transparent 1.4px), radial-gradient(rgba(255,255,255,.025) 1px, transparent 1.4px); background-size: 22px 22px, 22px 22px; background-position: 0 0, 11px 11px; }
+  .wa-in { background: #202C33; color: #E9EDEF; }
+  .wa-out { background: #005C4B; color: #E9EDEF; }
+  .bub { max-width: 82%; border-radius: 10px; padding: 6px 9px 4px; font-size: 13px; line-height: 1.4; box-shadow: 0 1px .5px rgba(0,0,0,.25); }
+  .msg { opacity: 0; transform: translateY(10px) scale(.98); transition: opacity .4s var(--ease-out), transform .55s var(--spring); }
+  .msg.in { opacity: 1; transform: none; }
+  .typing i { display: inline-block; width: 6px; height: 6px; margin: 0 1.5px; border-radius: 99px; background: #8696A0; animation: dot 1.1s infinite; }
+  .typing i:nth-child(2) { animation-delay: .15s; } .typing i:nth-child(3) { animation-delay: .3s; }
+  @keyframes dot { 0%, 60%, 100% { transform: translateY(0); opacity: .5; } 30% { transform: translateY(-3px); opacity: 1; } }
+  .side { opacity: 0; transform: translateY(14px) scale(.97); transition: opacity .5s var(--ease-out), transform .7s var(--spring); }
+  .side.in { opacity: 1; transform: none; }
+
+  .rise { opacity: 0; transform: translateY(16px); animation: rise .9s var(--ease-out) forwards; animation-delay: calc(var(--i, 0) * 90ms + 80ms); }
+  @keyframes rise { to { opacity: 1; transform: none; } }
+
+  #mnav { opacity: 0; transform: translateY(-8px); pointer-events: none; transition: opacity .25s, transform .4s var(--spring); }
+  #mnav.open { opacity: 1; transform: none; pointer-events: auto; }
+
+  .logo-icon { position: relative; overflow: hidden; border-radius: 26%; flex: none; }
+  .logo-icon img { position: absolute; max-width: none; width: calc(var(--s) * 3.887); left: calc(var(--s) * -.446); top: calc(var(--s) * -.542); }
+
+  .field { width: 100%; background: #0E0F13; border: 1px solid rgba(255,255,255,.12); border-radius: 12px; padding: .75rem 1rem; color: #fff; transition: border-color .2s; }
+  .field:hover { border-color: rgba(255,255,255,.22); }
+  .field::placeholder { color: #6b6c73; }
+  select.field option { background: #14151A; }
+
+  /* ===== 3D hero stage (inspired by floating-coin product heroes) ===== */
+  .stage3d { position: relative; perspective: 1600px; perspective-origin: 50% 40%; }
+  .p3d { transform-style: preserve-3d; will-change: transform; }
+  .phone3d { position: relative; transform-style: preserve-3d; }
+  .phone3d .iphone { position: relative; transform: translateZ(8px); }
+  .phone-edge { position: absolute; inset: 0; border-radius: 54px; background: linear-gradient(145deg, #4a4b55, #101115 45%, #33343c); }
+  .glare { position: absolute; inset: 0; border-radius: 54px; pointer-events: none; transform: translateZ(10px);
+    background: linear-gradient(var(--ga, 115deg), rgba(255,255,255,0) 35%, rgba(255,255,255,.16) 48%, rgba(255,255,255,0) 60%); mix-blend-mode: screen; }
+  .floor { position: absolute; left: 50%; bottom: -120px; width: 2400px; height: 900px; margin-left: -1200px; transform: rotateX(76deg); transform-origin: 50% 100%; pointer-events: none;
+    -webkit-mask-image: radial-gradient(50% 60% at 50% 80%, #000 20%, transparent 75%); mask-image: radial-gradient(50% 60% at 50% 80%, #000 20%, transparent 75%); overflow: hidden; }
+  .floor-grid { position: absolute; inset: -80px 0 0; animation: floorMove 6s linear infinite;
+    background-image: linear-gradient(rgba(24,200,232,.22) 1px, transparent 1px), linear-gradient(90deg, rgba(40,121,219,.18) 1px, transparent 1px); background-size: 80px 80px; }
+  @keyframes floorMove { to { transform: translateY(80px); } }
+  .floor-beam { position: absolute; top: 0; bottom: 0; width: 3px; background: linear-gradient(180deg, transparent, rgba(24,200,232,.9), transparent); filter: blur(1px); opacity: .7; }
+  .ground-shadow { position: absolute; left: 50%; bottom: -34px; width: 260px; height: 40px; margin-left: -130px; border-radius: 50%; background: radial-gradient(closest-side, rgba(0,0,0,.75), transparent); }
+  .coin { position: absolute; left: 50%; top: 50%; width: var(--d); height: var(--d); margin: calc(var(--d) / -2) 0 0 calc(var(--d) / -2); transform-style: preserve-3d; pointer-events: none; }
+  .coin .body { position: absolute; inset: 0; transform-style: preserve-3d; }
+  .coin .rim { position: absolute; inset: 0; border-radius: 50%; background: linear-gradient(135deg, #c9d3e4, #5d6880 50%, #aab6cc); }
+  .coin .face { position: absolute; inset: 0; border-radius: 50%; display: grid; place-items: center; transform: translateZ(calc(var(--t) / 2));
+    background: radial-gradient(circle at 32% 26%, #ffffff 0, #e9eef7 16%, #b4bfd2 42%, #eef2f9 66%, #8b97ae 100%);
+    box-shadow: inset 0 0 0 calc(var(--d) * .06) rgba(255,255,255,.55), inset 0 0 0 calc(var(--d) * .075) rgba(90,104,130,.5), inset 0 -8px 18px rgba(40,50,80,.35); }
+  .coin .face::after { content: ""; position: absolute; inset: 0; border-radius: 50%; background: linear-gradient(var(--ga, 115deg), transparent 30%, rgba(255,255,255,.65) 47%, transparent 62%); mix-blend-mode: soft-light; }
+  .coin .back { transform: translateZ(calc(var(--t) / -2)) rotateY(180deg); }
+  .coin svg { width: 46%; height: 46%; color: var(--c); filter: drop-shadow(0 1px 0 rgba(255,255,255,.8)) drop-shadow(0 -1px 1px rgba(0,0,0,.35)); }
+  .coin.glow .face { box-shadow: inset 0 0 0 calc(var(--d) * .06) rgba(255,255,255,.55), inset 0 0 0 calc(var(--d) * .075) rgba(90,104,130,.5), 0 0 40px rgba(24,200,232,.45); }
+
+  /* ===== Arrow-fill button (ported from Hyperiux Vault ArrowFillButton) ===== */
+  .afb { --h: 3.4rem; --c: 2.6rem; --r: .4rem; --y: calc((var(--h) - var(--c)) / 2); --pad: 1.7rem; --ease: cubic-bezier(.785,.135,.15,.86);
+    position: relative; isolation: isolate; display: inline-flex; align-items: center; height: var(--h); padding-inline: var(--pad) calc(var(--c) + var(--r) + 1.1rem);
+    border-radius: 999px; overflow: hidden; white-space: nowrap; font-weight: 600; color: #fff; background: var(--grad); box-shadow: 0 10px 28px -10px rgba(112,41,201,.7); transition: transform .45s var(--spring); }
+  [dir="rtl"] .afb { background-image: linear-gradient(270deg, #18C8E8, #2879DB, #7029C9); }
+  .afb:active { transform: scale(.97); transition-duration: .12s; }
+  .afb-label { position: relative; z-index: 1; }
+  .afb-fill { position: absolute; inset: 0; z-index: 2; display: flex; align-items: center; padding-inline: var(--pad) calc(var(--c) + var(--r) + 1.1rem); background: #fff; color: #24252B; border-radius: inherit;
+    clip-path: inset(var(--y) var(--r) var(--y) calc(100% - var(--r) - var(--c)) round 999px); transition: clip-path .45s var(--ease); }
+  [dir="rtl"] .afb-fill { clip-path: inset(var(--y) calc(100% - var(--r) - var(--c)) var(--y) var(--r) round 999px); }
+  .afb:hover .afb-fill, .afb:focus-visible .afb-fill, .afb[data-pressed="true"] .afb-fill { clip-path: inset(0 0 0 0 round 999px); }
+  .afb-icon { position: absolute; z-index: 3; inset-inline-end: var(--r); top: 50%; width: var(--c); height: var(--c); margin-top: calc(var(--c) / -2); border-radius: 50%; overflow: hidden; color: #2879DB; }
+  [dir="rtl"] .afb-icon { transform: scaleX(-1); }
+  .afb-icon svg { position: absolute; left: 50%; top: 50%; width: 42%; height: 42%; transition: transform .45s var(--ease); }
+  .afb-icon .a1 { transform: translate(-170%, -50%) scale(0); }
+  .afb-icon .a2 { transform: translate(-50%, -50%); }
+  .afb:hover .a1, .afb:focus-visible .a1, .afb[data-pressed="true"] .a1 { transform: translate(-50%, -50%) scale(1); }
+  .afb:hover .a2, .afb:focus-visible .a2, .afb[data-pressed="true"] .a2 { transform: translate(20%, -50%) scale(0); }
+  .afb-sm { --h: 2.5rem; --c: 1.95rem; --r: .28rem; --pad: 1.05rem; font-size: .875rem; }
+  .afb-block { display: flex; justify-content: center; width: 100%; }
+  .afb-block .afb-fill { justify-content: center; }
+
+  /* ===== Results calendar (ported from shadcn Calendar + habit DayButton) ===== */
+  .rc-day { position: relative; display: grid; place-items: center; aspect-ratio: 1; border-radius: .6rem; font-size: .9rem; font-variant-numeric: tabular-nums; color: rgba(255,255,255,.8); transition: transform .35s var(--spring); }
+  .rc-day:hover:not(:disabled) { transform: translateY(-2px); background: rgba(255,255,255,.07); }
+  .rc-day:active:not(:disabled) { transform: scale(.94); }
+  .rc-day.done { background: rgba(24,200,232,.12); color: #7fe3f5; font-weight: 700; }
+  .rc-day.done:hover { background: rgba(24,200,232,.2); }
+  .rc-day.sel, .rc-day.sel:hover { background: var(--grad); color: #fff; box-shadow: 0 8px 22px -8px rgba(40,121,219,.6); }
+  .rc-day:focus-visible { outline: 2px solid #18C8E8; outline-offset: 2px; }
+  .rc-day .chk { position: absolute; right: 3px; bottom: 3px; width: 11px; height: 11px; color: #18C8E8; }
+  [dir="rtl"] .rc-day .chk { right: auto; left: 3px; }
+  .rc-day.sel .chk { color: #fff; }
+  .rc-day.outside { color: rgba(255,255,255,.22); }
+  .rc-day:disabled { cursor: default; opacity: .4; }
+  .rc-day.later:disabled { opacity: 1; }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; scroll-behavior: auto !important; }
+  }
+</style>
+</head>
+<body class="font-body grain">
+<!-- Brand logos (Simple Icons + Retell AI), see assets/logos -->
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
+  <symbol id="lg-whatsapp" viewBox="0 0 24 24"><path fill="currentColor" d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></symbol>
+  <symbol id="lg-instagram" viewBox="0 0 24 24"><path fill="currentColor" d="M7.0301.084c-1.2768.0602-2.1487.264-2.911.5634-.7888.3075-1.4575.72-2.1228 1.3877-.6652.6677-1.075 1.3368-1.3802 2.127-.2954.7638-.4956 1.6365-.552 2.914-.0564 1.2775-.0689 1.6882-.0626 4.947.0062 3.2586.0206 3.6671.0825 4.9473.061 1.2765.264 2.1482.5635 2.9107.308.7889.72 1.4573 1.388 2.1228.6679.6655 1.3365 1.0743 2.1285 1.38.7632.295 1.6361.4961 2.9134.552 1.2773.056 1.6884.069 4.9462.0627 3.2578-.0062 3.668-.0207 4.9478-.0814 1.28-.0607 2.147-.2652 2.9098-.5633.7889-.3086 1.4578-.72 2.1228-1.3881.665-.6682 1.0745-1.3378 1.3795-2.1284.2957-.7632.4966-1.636.552-2.9124.056-1.2809.0692-1.6898.063-4.948-.0063-3.2583-.021-3.6668-.0817-4.9465-.0607-1.2797-.264-2.1487-.5633-2.9117-.3084-.7889-.72-1.4568-1.3876-2.1228C21.2982 1.33 20.628.9208 19.8378.6165 19.074.321 18.2017.1197 16.9244.0645 15.6471.0093 15.236-.005 11.977.0014 8.718.0076 8.31.0215 7.0301.0839m.1402 21.6932c-1.17-.0509-1.8053-.2453-2.2287-.408-.5606-.216-.96-.4771-1.3819-.895-.422-.4178-.6811-.8186-.9-1.378-.1644-.4234-.3624-1.058-.4171-2.228-.0595-1.2645-.072-1.6442-.079-4.848-.007-3.2037.0053-3.583.0607-4.848.05-1.169.2456-1.805.408-2.2282.216-.5613.4762-.96.895-1.3816.4188-.4217.8184-.6814 1.3783-.9003.423-.1651 1.0575-.3614 2.227-.4171 1.2655-.06 1.6447-.072 4.848-.079 3.2033-.007 3.5835.005 4.8495.0608 1.169.0508 1.8053.2445 2.228.408.5608.216.96.4754 1.3816.895.4217.4194.6816.8176.9005 1.3787.1653.4217.3617 1.056.4169 2.2263.0602 1.2655.0739 1.645.0796 4.848.0058 3.203-.0055 3.5834-.061 4.848-.051 1.17-.245 1.8055-.408 2.2294-.216.5604-.4763.96-.8954 1.3814-.419.4215-.8181.6811-1.3783.9-.4224.1649-1.0577.3617-2.2262.4174-1.2656.0595-1.6448.072-4.8493.079-3.2045.007-3.5825-.006-4.848-.0608M16.953 5.5864A1.44 1.44 0 1 0 18.39 4.144a1.44 1.44 0 0 0-1.437 1.4424M5.8385 12.012c.0067 3.4032 2.7706 6.1557 6.173 6.1493 3.4026-.0065 6.157-2.7701 6.1506-6.1733-.0065-3.4032-2.771-6.1565-6.174-6.1498-3.403.0067-6.156 2.771-6.1496 6.1738M8 12.0077a4 4 0 1 1 4.008 3.9921A3.9996 3.9996 0 0 1 8 12.0077"/></symbol>
+  <symbol id="lg-messenger" viewBox="0 0 24 24"><path fill="currentColor" d="M.001 11.639C.001 4.949 5.241 0 12.001 0S24 4.95 24 11.639c0 6.689-5.24 11.638-12 11.638-1.21 0-2.38-.16-3.47-.46a.96.96 0 00-.64.05l-2.39 1.05a.96.96 0 01-1.35-.85l-.07-2.14a.97.97 0 00-.32-.68A11.39 11.389 0 01.002 11.64zm8.32-2.19l-3.52 5.6c-.35.53.32 1.139.82.75l3.79-2.87c.26-.2.6-.2.87 0l2.8 2.1c.84.63 2.04.4 2.6-.48l3.52-5.6c.35-.53-.32-1.13-.82-.75l-3.79 2.87c-.25.2-.6.2-.86 0l-2.8-2.1a1.8 1.8 0 00-2.61.48z"/></symbol>
+  <symbol id="lg-n8n" viewBox="0 0 24 24"><path fill="currentColor" d="M21.4737 5.6842c-1.1772 0-2.1663.8051-2.4468 1.8947h-2.8955c-1.235 0-2.289.893-2.492 2.111l-.1038.623a1.263 1.263 0 0 1-1.246 1.0555H11.289c-.2805-1.0896-1.2696-1.8947-2.4468-1.8947s-2.1663.8051-2.4467 1.8947H4.973c-.2805-1.0896-1.2696-1.8947-2.4468-1.8947C1.1311 9.4737 0 10.6047 0 12s1.131 2.5263 2.5263 2.5263c1.1772 0 2.1663-.8051 2.4468-1.8947h1.4223c.2804 1.0896 1.2696 1.8947 2.4467 1.8947 1.1772 0 2.1663-.8051 2.4468-1.8947h1.0008a1.263 1.263 0 0 1 1.2459 1.0555l.1038.623c.203 1.218 1.257 2.111 2.492 2.111h.3692c.2804 1.0895 1.2696 1.8947 2.4468 1.8947 1.3952 0 2.5263-1.131 2.5263-2.5263s-1.131-2.5263-2.5263-2.5263c-1.1772 0-2.1664.805-2.4468 1.8947h-.3692a1.263 1.263 0 0 1-1.246-1.0555l-.1037-.623A2.52 2.52 0 0 0 13.9607 12a2.52 2.52 0 0 0 .821-1.4794l.1038-.623a1.263 1.263 0 0 1 1.2459-1.0555h2.8955c.2805 1.0896 1.2696 1.8947 2.4468 1.8947 1.3952 0 2.5263-1.131 2.5263-2.5263s-1.131-2.5263-2.5263-2.5263m0 1.2632a1.263 1.263 0 0 1 1.2631 1.2631 1.263 1.263 0 0 1-1.2631 1.2632 1.263 1.263 0 0 1-1.2632-1.2632 1.263 1.263 0 0 1 1.2632-1.2631M2.5263 10.7368A1.263 1.263 0 0 1 3.7895 12a1.263 1.263 0 0 1-1.2632 1.2632A1.263 1.263 0 0 1 1.2632 12a1.263 1.263 0 0 1 1.2631-1.2632m6.3158 0A1.263 1.263 0 0 1 10.1053 12a1.263 1.263 0 0 1-1.2632 1.2632A1.263 1.263 0 0 1 7.579 12a1.263 1.263 0 0 1 1.2632-1.2632m10.1053 3.7895a1.263 1.263 0 0 1 1.2631 1.2632 1.263 1.263 0 0 1-1.2631 1.2631 1.263 1.263 0 0 1-1.2632-1.2631 1.263 1.263 0 0 1 1.2632-1.2632"/></symbol>
+  <symbol id="lg-openai" viewBox="0 0 24 24"><path fill="currentColor" d="M22.2819 9.8211a5.9847 5.9847 0 0 0-.5157-4.9108 6.0462 6.0462 0 0 0-6.5098-2.9A6.0651 6.0651 0 0 0 4.9807 4.1818a5.9847 5.9847 0 0 0-3.9977 2.9 6.0462 6.0462 0 0 0 .7427 7.0966 5.98 5.98 0 0 0 .511 4.9107 6.051 6.051 0 0 0 6.5146 2.9001A5.9847 5.9847 0 0 0 13.2599 24a6.0557 6.0557 0 0 0 5.7718-4.2058 5.9894 5.9894 0 0 0 3.9977-2.9001 6.0557 6.0557 0 0 0-.7475-7.0729zm-9.022 12.6081a4.4755 4.4755 0 0 1-2.8764-1.0408l.1419-.0804 4.7783-2.7582a.7948.7948 0 0 0 .3927-.6813v-6.7369l2.02 1.1686a.071.071 0 0 1 .038.052v5.5826a4.504 4.504 0 0 1-4.4945 4.4944zm-9.6607-4.1254a4.4708 4.4708 0 0 1-.5346-3.0137l.142.0852 4.783 2.7582a.7712.7712 0 0 0 .7806 0l5.8428-3.3685v2.3324a.0804.0804 0 0 1-.0332.0615L9.74 19.9502a4.4992 4.4992 0 0 1-6.1408-1.6464zM2.3408 7.8956a4.485 4.485 0 0 1 2.3655-1.9728V11.6a.7664.7664 0 0 0 .3879.6765l5.8144 3.3543-2.0201 1.1685a.0757.0757 0 0 1-.071 0l-4.8303-2.7865A4.504 4.504 0 0 1 2.3408 7.872zm16.5963 3.8558L13.1038 8.364 15.1192 7.2a.0757.0757 0 0 1 .071 0l4.8303 2.7913a4.4944 4.4944 0 0 1-.6765 8.1042v-5.6772a.79.79 0 0 0-.407-.667zm2.0107-3.0231l-.142-.0852-4.7735-2.7818a.7759.7759 0 0 0-.7854 0L9.409 9.2297V6.8974a.0662.0662 0 0 1 .0284-.0615l4.8303-2.7866a4.4992 4.4992 0 0 1 6.6802 4.66zM8.3065 12.863l-2.02-1.1638a.0804.0804 0 0 1-.038-.0567V6.0742a4.4992 4.4992 0 0 1 7.3757-3.4537l-.142.0805L8.704 5.459a.7948.7948 0 0 0-.3927.6813zm1.0976-2.3654l2.602-1.4998 2.6069 1.4998v2.9994l-2.5974 1.4997-2.6067-1.4997Z"/></symbol>
+  <symbol id="lg-googlecalendar" viewBox="0 0 24 24"><path fill="currentColor" d="M18.316 5.684H24v12.632h-5.684V5.684zM5.684 24h12.632v-5.684H5.684V24zM18.316 5.684V0H1.895A1.894 1.894 0 0 0 0 1.895v16.421h5.684V5.684h12.632zm-7.207 6.25v-.065c.272-.144.5-.349.687-.617s.279-.595.279-.982c0-.379-.099-.72-.3-1.025a2.05 2.05 0 0 0-.832-.714 2.703 2.703 0 0 0-1.197-.257c-.6 0-1.094.156-1.481.467-.386.311-.65.671-.793 1.078l1.085.452c.086-.249.224-.461.413-.633.189-.172.445-.257.767-.257.33 0 .602.088.816.264a.86.86 0 0 1 .322.703c0 .33-.12.589-.36.778-.24.19-.535.284-.886.284h-.567v1.085h.633c.407 0 .748.109 1.02.327.272.218.407.499.407.843 0 .336-.129.614-.387.832s-.565.327-.924.327c-.351 0-.651-.103-.897-.311-.248-.208-.422-.502-.521-.881l-1.096.452c.178.616.505 1.082.977 1.401.472.319.984.478 1.538.477a2.84 2.84 0 0 0 1.293-.291c.382-.193.684-.458.902-.794.218-.336.327-.72.327-1.149 0-.429-.115-.797-.344-1.105a2.067 2.067 0 0 0-.881-.689zm2.093-1.931l.602.913L15 10.045v5.744h1.187V8.446h-.827l-2.158 1.557zM22.105 0h-3.289v5.184H24V1.895A1.894 1.894 0 0 0 22.105 0zm-3.289 23.5l4.684-4.684h-4.684V23.5zM0 22.105C0 23.152.848 24 1.895 24h3.289v-5.184H0v3.289z"/></symbol>
+  <symbol id="lg-googlesheets" viewBox="0 0 24 24"><path fill="currentColor" d="M11.318 12.545H7.91v-1.909h3.41v1.91zM14.728 0v6h6l-6-6zm1.363 10.636h-3.41v1.91h3.41v-1.91zm0 3.273h-3.41v1.91h3.41v-1.91zM20.727 6.5v15.864c0 .904-.732 1.636-1.636 1.636H4.909a1.636 1.636 0 0 1-1.636-1.636V1.636C3.273.732 4.005 0 4.909 0h9.318v6.5h6.5zm-3.273 2.773H6.545v7.909h10.91v-7.91zm-6.136 4.636H7.91v1.91h3.41v-1.91z"/></symbol>
+  <symbol id="lg-shopify" viewBox="0 0 24 24"><path fill="currentColor" d="M15.337 23.979l7.216-1.561s-2.604-17.613-2.625-17.73c-.018-.116-.114-.192-.211-.192s-1.929-.136-1.929-.136-1.275-1.274-1.439-1.411c-.045-.037-.075-.057-.121-.074l-.914 21.104h.023zM11.71 11.305s-.81-.424-1.774-.424c-1.447 0-1.504.906-1.504 1.141 0 1.232 3.24 1.715 3.24 4.629 0 2.295-1.44 3.76-3.406 3.76-2.354 0-3.54-1.465-3.54-1.465l.646-2.086s1.245 1.066 2.28 1.066c.675 0 .975-.545.975-.932 0-1.619-2.654-1.694-2.654-4.359-.034-2.237 1.571-4.416 4.827-4.416 1.257 0 1.875.361 1.875.361l-.945 2.715-.02.01zM11.17.83c.136 0 .271.038.405.135-.984.465-2.064 1.639-2.508 3.992-.656.213-1.293.405-1.889.578C7.697 3.75 8.951.84 11.17.84V.83zm1.235 2.949v.135c-.754.232-1.583.484-2.394.736.466-1.777 1.333-2.645 2.085-2.971.193.501.309 1.176.309 2.1zm.539-2.234c.694.074 1.141.867 1.429 1.755-.349.114-.735.231-1.158.366v-.252c0-.752-.096-1.371-.271-1.871v.002zm2.992 1.289c-.02 0-.06.021-.078.021s-.289.075-.714.21c-.423-1.233-1.176-2.37-2.508-2.37h-.115C12.135.209 11.669 0 11.265 0 8.159 0 6.675 3.877 6.21 5.846c-1.194.365-2.063.636-2.16.674-.675.213-.694.232-.772.87-.075.462-1.83 14.063-1.83 14.063L15.009 24l.927-21.166z"/></symbol>
+  <symbol id="lg-supabase" viewBox="0 0 24 24"><path fill="currentColor" d="M11.9 1.036c-.015-.986-1.26-1.41-1.874-.637L.764 12.05C-.33 13.427.65 15.455 2.409 15.455h9.579l.113 7.51c.014.985 1.259 1.408 1.873.636l9.262-11.653c1.093-1.375.113-3.403-1.645-3.403h-9.642z"/></symbol>
+  <symbol id="lg-retell" viewBox="0 0 94 26"><path fill="currentColor" d="M9.2651 21.1406C10.569 21.1406 11.6259 22.2287 11.6259 23.5703C11.6259 24.9119 10.569 26 9.2651 26C7.9612 26 6.903 24.9119 6.903 23.5703C6.903 22.2287 7.9599 21.1406 9.2651 21.1406ZM16.0147 21.1406C17.3199 21.1406 18.3781 22.2274 18.3781 23.5703C18.3781 24.9119 17.3199 26 16.0147 26C14.7108 26 13.6539 24.9119 13.6539 23.5703C13.6539 22.2287 14.7108 21.1406 16.0147 21.1406ZM58.0346 7.5777C62.361 7.5777 64.4228 10.9863 64.4228 15.496H54.5727C54.6988 18.0388 56.2523 19.3505 58.1867 19.3505C59.917 19.3505 60.8088 18.3287 61.1897 17.4369H64.2954C63.4556 20.085 61.2911 21.8153 58.1607 21.8153C54.0124 21.8153 51.493 18.8786 51.4917 14.6835C51.493 10.5937 54.0631 7.5777 58.0346 7.5777ZM58.0086 9.8852C56.0235 9.8852 54.7248 11.3802 54.5727 13.3198H61.3171C61.2664 11.3802 60.0197 9.8865 58.0086 9.8852ZM77.9844 7.5777C82.3108 7.5777 84.3726 10.9863 84.3726 15.496H74.5225C74.6499 18.0388 76.2034 19.3505 78.1365 19.3505C79.8681 19.3505 80.7586 18.3287 81.1408 17.4369H84.2465C83.4067 20.085 81.2422 21.8153 78.1118 21.8153C73.9635 21.8153 71.4428 18.8786 71.4428 14.6835C71.4428 10.5937 74.0142 7.5777 77.9844 7.5777ZM77.9597 9.8852C75.9746 9.8852 74.6759 11.3802 74.5225 13.3198H81.2682C81.2162 11.3802 79.9695 9.8865 77.9597 9.8852ZM44.8201 3.1239C48.9424 3.1239 51.0029 5.0128 51.0029 8.1055C51.0029 10.8589 49.5027 12.1953 47.619 12.6945V12.7478C49.2219 13.0364 50.3178 14.0842 50.5206 16.8116L50.5713 17.4928C50.674 18.8565 50.6987 20.7168 51.1316 21.3993V21.4773H47.9752C47.6697 20.8221 47.5423 19.721 47.5176 18.5939C47.4409 15.2113 46.7272 14.0322 43.5214 14.0322H40.4157V21.4773H37.2593V3.1239H44.8201ZM40.4157 11.5141H44.6147C45.5052 11.5141 46.2943 11.3308 46.8546 10.9122C47.5163 10.4403 47.8998 9.6525 47.8998 8.5514C47.8998 7.4243 47.5423 6.6391 46.7779 6.1932C46.1929 5.8526 45.4558 5.72 44.3105 5.72H40.4157V11.5141ZM69.0014 7.9729H71.4454V10.2011H69.0014V17.4369C69.0014 18.8786 69.3589 19.1425 70.6303 19.1425C70.9098 19.1425 71.1659 19.1412 71.4194 19.1152V21.4227C70.8851 21.4487 70.4015 21.476 69.8672 21.476C68.5438 21.476 67.4999 21.3967 66.8889 20.9508C66.2779 20.5049 65.9997 19.7704 65.9997 18.46V10.2011H64.2161V7.9729H65.9997V3.8038H69.0014V7.9729ZM88.5235 21.4747H85.5192V3.12H88.5235V21.4747ZM93.5675 21.4747H90.5632V3.12H93.5675V21.4747ZM2.3621 14.0452C3.6673 14.0452 4.7242 15.1333 4.7242 16.4749C4.7242 17.8165 3.6673 18.9046 2.3621 18.9046C1.0582 18.9046 0 17.8165 0 16.4749C0 15.1333 1.0582 14.0452 2.3621 14.0452ZM22.9125 14.0452C24.2164 14.0452 25.2746 15.1333 25.2746 16.4749C25.2746 17.8165 24.2164 18.9046 22.9125 18.9046C21.6086 18.9046 20.5517 17.8165 20.5517 16.4749C20.5517 15.1333 21.6086 14.0452 22.9125 14.0452ZM2.3621 7.0941C3.6673 7.0941 4.7242 8.1822 4.7242 9.5238C4.7242 10.8654 3.6673 11.9535 2.3621 11.9535C1.0582 11.9535 0 10.8654 0 9.5238C0 8.1822 1.0582 7.0941 2.3621 7.0941ZM22.9125 7.0941C24.2164 7.0941 25.2746 8.1822 25.2746 9.5238C25.2746 10.8654 24.2164 11.9535 22.9125 11.9535C21.6086 11.9535 20.5517 10.8654 20.5517 9.5238C20.5517 8.1822 21.6086 7.0941 22.9125 7.0941ZM9.2651 0C10.569 0 11.6259 1.0881 11.6259 2.4297C11.6259 3.7713 10.569 4.8594 9.2651 4.8594C7.9599 4.8594 6.903 3.7713 6.903 2.4297C6.903 1.0881 7.9599 0 9.2651 0ZM16.0147 0C17.3199 0 18.3781 1.0881 18.3781 2.4297C18.3781 3.7713 17.3199 4.8594 16.0147 4.8594C14.7108 4.8594 13.6539 3.7713 13.6539 2.4297C13.6539 1.0881 14.7108 0 16.0147 0Z"/></symbol>
+  <symbol id="lg-retell-mark" viewBox="0 0 26 26"><path fill="currentColor" d="M9.2651 21.1406C10.569 21.1406 11.6259 22.2287 11.6259 23.5703C11.6259 24.9119 10.569 26 9.2651 26C7.9612 26 6.903 24.9119 6.903 23.5703C6.903 22.2287 7.9599 21.1406 9.2651 21.1406ZM16.0147 21.1406C17.3199 21.1406 18.3781 22.2274 18.3781 23.5703C18.3781 24.9119 17.3199 26 16.0147 26C14.7108 26 13.6539 24.9119 13.6539 23.5703C13.6539 22.2287 14.7108 21.1406 16.0147 21.1406ZM58.0346 7.5777C62.361 7.5777 64.4228 10.9863 64.4228 15.496H54.5727C54.6988 18.0388 56.2523 19.3505 58.1867 19.3505C59.917 19.3505 60.8088 18.3287 61.1897 17.4369H64.2954C63.4556 20.085 61.2911 21.8153 58.1607 21.8153C54.0124 21.8153 51.493 18.8786 51.4917 14.6835C51.493 10.5937 54.0631 7.5777 58.0346 7.5777ZM58.0086 9.8852C56.0235 9.8852 54.7248 11.3802 54.5727 13.3198H61.3171C61.2664 11.3802 60.0197 9.8865 58.0086 9.8852ZM77.9844 7.5777C82.3108 7.5777 84.3726 10.9863 84.3726 15.496H74.5225C74.6499 18.0388 76.2034 19.3505 78.1365 19.3505C79.8681 19.3505 80.7586 18.3287 81.1408 17.4369H84.2465C83.4067 20.085 81.2422 21.8153 78.1118 21.8153C73.9635 21.8153 71.4428 18.8786 71.4428 14.6835C71.4428 10.5937 74.0142 7.5777 77.9844 7.5777ZM77.9597 9.8852C75.9746 9.8852 74.6759 11.3802 74.5225 13.3198H81.2682C81.2162 11.3802 79.9695 9.8865 77.9597 9.8852ZM44.8201 3.1239C48.9424 3.1239 51.0029 5.0128 51.0029 8.1055C51.0029 10.8589 49.5027 12.1953 47.619 12.6945V12.7478C49.2219 13.0364 50.3178 14.0842 50.5206 16.8116L50.5713 17.4928C50.674 18.8565 50.6987 20.7168 51.1316 21.3993V21.4773H47.9752C47.6697 20.8221 47.5423 19.721 47.5176 18.5939C47.4409 15.2113 46.7272 14.0322 43.5214 14.0322H40.4157V21.4773H37.2593V3.1239H44.8201ZM40.4157 11.5141H44.6147C45.5052 11.5141 46.2943 11.3308 46.8546 10.9122C47.5163 10.4403 47.8998 9.6525 47.8998 8.5514C47.8998 7.4243 47.5423 6.6391 46.7779 6.1932C46.1929 5.8526 45.4558 5.72 44.3105 5.72H40.4157V11.5141ZM69.0014 7.9729H71.4454V10.2011H69.0014V17.4369C69.0014 18.8786 69.3589 19.1425 70.6303 19.1425C70.9098 19.1425 71.1659 19.1412 71.4194 19.1152V21.4227C70.8851 21.4487 70.4015 21.476 69.8672 21.476C68.5438 21.476 67.4999 21.3967 66.8889 20.9508C66.2779 20.5049 65.9997 19.7704 65.9997 18.46V10.2011H64.2161V7.9729H65.9997V3.8038H69.0014V7.9729ZM88.5235 21.4747H85.5192V3.12H88.5235V21.4747ZM93.5675 21.4747H90.5632V3.12H93.5675V21.4747ZM2.3621 14.0452C3.6673 14.0452 4.7242 15.1333 4.7242 16.4749C4.7242 17.8165 3.6673 18.9046 2.3621 18.9046C1.0582 18.9046 0 17.8165 0 16.4749C0 15.1333 1.0582 14.0452 2.3621 14.0452ZM22.9125 14.0452C24.2164 14.0452 25.2746 15.1333 25.2746 16.4749C25.2746 17.8165 24.2164 18.9046 22.9125 18.9046C21.6086 18.9046 20.5517 17.8165 20.5517 16.4749C20.5517 15.1333 21.6086 14.0452 22.9125 14.0452ZM2.3621 7.0941C3.6673 7.0941 4.7242 8.1822 4.7242 9.5238C4.7242 10.8654 3.6673 11.9535 2.3621 11.9535C1.0582 11.9535 0 10.8654 0 9.5238C0 8.1822 1.0582 7.0941 2.3621 7.0941ZM22.9125 7.0941C24.2164 7.0941 25.2746 8.1822 25.2746 9.5238C25.2746 10.8654 24.2164 11.9535 22.9125 11.9535C21.6086 11.9535 20.5517 10.8654 20.5517 9.5238C20.5517 8.1822 21.6086 7.0941 22.9125 7.0941ZM9.2651 0C10.569 0 11.6259 1.0881 11.6259 2.4297C11.6259 3.7713 10.569 4.8594 9.2651 4.8594C7.9599 4.8594 6.903 3.7713 6.903 2.4297C6.903 1.0881 7.9599 0 9.2651 0ZM16.0147 0C17.3199 0 18.3781 1.0881 18.3781 2.4297C18.3781 3.7713 17.3199 4.8594 16.0147 4.8594C14.7108 4.8594 13.6539 3.7713 13.6539 2.4297C13.6539 1.0881 14.7108 0 16.0147 0Z"/></symbol>
+</svg>
+
+<!-- ================= NAV ================= -->
+<header class="fixed inset-x-0 top-0 z-50 border-b border-white/[.06] bg-night/75 backdrop-blur-xl">
+  <nav class="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 md:px-6" aria-label="Main">
+    <div class="flex items-center gap-9">
+      <a href="#top" class="press flex items-center gap-2.5 rounded-xl" aria-label="Voicely.ai home">
+        <span class="logo-icon h-8 w-8" style="--s:32px"><img src="my_brand_guideline/logoss.png" alt=""></span>
+        <span class="font-display text-[1.05rem] font-extrabold" dir="ltr">Voicely<span class="text-[.8em] text-mist">.ai</span></span>
+      </a>
+      <ul class="hidden items-center gap-7 text-[.9rem] text-white/70 lg:flex">
+        <li><a class="link-u hover:text-white" href="#product" data-i18n="nav_product">Product</a></li>
+        <li><a class="link-u hover:text-white" href="#why" data-i18n="nav_why">Why Voicely</a></li>
+        <li><a class="link-u hover:text-white" href="#clients" data-i18n="nav_clients">Clients</a></li>
+        <li><a class="link-u hover:text-white" href="#services" data-i18n="nav_services">Services</a></li>
+        <li><a class="link-u hover:text-white" href="#about" data-i18n="nav_about">About</a></li>
+      </ul>
+    </div>
+    <div class="flex items-center gap-2">
+      <button type="button" class="lang-toggle press btn-ghost rounded-lg px-3 py-1.5 text-sm font-semibold" data-i18n="lang_switch">عربي</button>
+      <a href="#book" class="link-u hidden px-2 text-[.9rem] text-white/70 hover:text-white md:inline" data-i18n="nav_contact">Contact</a>
+      <a href="#book" class="afb afb-sm hidden sm:inline-flex"><span class="afb-label" data-i18n="nav_cta">Get a demo</span><span class="afb-fill" aria-hidden="true"><span data-i18n="nav_cta">Get a demo</span></span><span class="afb-icon" aria-hidden="true"><svg class="a1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg><svg class="a2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span></a>
+      <button type="button" id="mbtn" class="press btn-ghost grid h-9 w-9 place-items-center rounded-lg lg:hidden" aria-expanded="false" aria-controls="mnav" aria-label="Menu">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h10"/></svg>
+      </button>
+    </div>
+  </nav>
+  <div id="mnav" class="absolute inset-x-4 top-[4.5rem] rounded-2xl border border-white/10 bg-night-1 p-3 shadow-2xl lg:hidden">
+    <ul class="grid gap-1 font-semibold">
+      <li><a class="block rounded-xl px-4 py-3 hover:bg-white/5 active:opacity-70" href="#product" data-i18n="nav_product">Product</a></li>
+      <li><a class="block rounded-xl px-4 py-3 hover:bg-white/5 active:opacity-70" href="#why" data-i18n="nav_why">Why Voicely</a></li>
+      <li><a class="block rounded-xl px-4 py-3 hover:bg-white/5 active:opacity-70" href="#clients" data-i18n="nav_clients">Clients</a></li>
+      <li><a class="block rounded-xl px-4 py-3 hover:bg-white/5 active:opacity-70" href="#services" data-i18n="nav_services">Services</a></li>
+      <li><a class="block rounded-xl px-4 py-3 hover:bg-white/5 active:opacity-70" href="#about" data-i18n="nav_about">About</a></li>
+      <li class="pt-2"><a class="press btn-primary block rounded-xl px-4 py-3 text-center" href="#book" data-i18n="nav_cta">Get a demo</a></li>
+    </ul>
+  </div>
+</header>
+
+<main id="top">
+
+<!-- ================= HERO ================= -->
+<section class="relative overflow-hidden pb-16 pt-28 md:pt-32">
+  <div aria-hidden="true" class="pointer-events-none absolute inset-0 -z-10"
+       style="background:
+         radial-gradient(40% 32% at 50% 62%, rgba(112,41,201,.30), transparent 70%),
+         radial-gradient(30% 26% at 38% 70%, rgba(24,200,232,.16), transparent 70%),
+         radial-gradient(30% 30% at 64% 72%, rgba(40,121,219,.20), transparent 70%),
+         radial-gradient(60% 30% at 50% 0%, rgba(40,121,219,.10), transparent 70%);"></div>
+
+  <div class="mx-auto max-w-6xl px-4 text-center md:px-6">
+    <a href="#clients" class="rise press mx-auto inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[.04] py-1 pe-3.5 ps-1 text-[.82rem] text-white/80" style="--i:0">
+      <span class="rounded-full grad-bg px-2 py-0.5 text-[.72rem] font-bold text-white" data-i18n="pill_tag">Live</span>
+      <span data-i18n="pill">32 appointments booked in 5 days for a dental clinic</span>
+    </a>
+    <h1 class="rise mx-auto mt-7 max-w-6xl font-display text-[2.5rem] font-extrabold sm:text-6xl lg:text-[4.1rem]" style="--i:1">
+      <span data-i18n="hero_t1">AI agents that book clients</span><br class="hidden sm:block">
+      <span class="grad-text" data-i18n="hero_t2">while you sleep.</span>
+    </h1>
+    <p class="rise mx-auto mt-6 max-w-2xl text-[1.05rem] text-white/65 md:text-lg" style="--i:2" data-i18n="hero_sub">We build AI DM setters, voice receptionists and automations with n8n, Retell AI, OpenAI and the WhatsApp and Instagram APIs. Your business never misses a lead, answers every message in seconds and books more appointments automatically.</p>
+    <div class="rise mt-9 flex flex-wrap items-center justify-center gap-3" style="--i:3">
+      <a href="#book" class="afb "><span class="afb-label" data-i18n="hero_cta">Get a demo</span><span class="afb-fill" aria-hidden="true"><span data-i18n="hero_cta">Get a demo</span></span><span class="afb-icon" aria-hidden="true"><svg class="a1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg><svg class="a2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span></a>
+      <a href="#product" class="press btn-ghost rounded-xl px-6 py-3.5 font-semibold" data-i18n="hero_cta2">See what it does</a>
+    </div>
+    <p class="rise mt-4 text-sm text-white/45" style="--i:4" data-i18n="hero_note">For clinics, med spas and e-commerce brands</p>
+  </div>
+
+  <!-- Phone stage -->
+  <div class="rise relative mx-auto mt-6 max-w-6xl px-4 md:px-6" style="--i:4" id="product">
+    <div class="stage3d flex h-[760px] items-center justify-center" id="stage">
+      <!-- glowing perspective floor -->
+      <div class="floor" aria-hidden="true">
+        <div class="floor-grid"></div>
+        <span class="floor-beam" style="left:38%"></span><span class="floor-beam" style="left:52%;opacity:.45"></span><span class="floor-beam" style="left:63%"></span>
+      </div>
+      <div aria-hidden="true" class="pointer-events-none absolute left-1/2 top-1/2 h-[520px] w-[520px] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-70 blur-3xl" style="background: radial-gradient(closest-side, rgba(112,41,201,.55), rgba(40,121,219,.25) 55%, transparent);"></div>
+
+    <div id="scene" class="p3d relative flex h-full w-full items-center justify-center">
+      <!-- floating 3D logo coins -->
+      <div id="coins" class="p3d pointer-events-none absolute inset-0" aria-hidden="true"></div>
+      <div id="groundShadow" class="ground-shadow" aria-hidden="true" style="bottom:40px"></div>
+
+      <!-- side card: lead -->
+      <div class="absolute start-0 top-[150px] z-20 hidden lg:block xl:start-6" style="transform: translateZ(110px)">
+      <div id="sideLead" class="side card w-[19rem] rounded-2xl p-5 text-start">
+        <div class="flex items-center justify-between">
+          <p class="text-[.8rem] font-semibold text-white/50" data-i18n="lead_h">New lead</p>
+          <span class="inline-flex items-center gap-1 rounded-full bg-[#25D366]/15 px-2 py-0.5 text-[.7rem] font-bold text-[#25D366]"><svg width="11" height="11"><use href="#lg-whatsapp"/></svg>WhatsApp</span>
+        </div>
+        <dl class="mt-4 grid gap-2.5 text-[.85rem]">
+          <div class="card-2 flex justify-between rounded-lg px-3 py-2"><dt class="text-white/50" data-i18n="lead_name_k">Patient</dt><dd class="font-semibold" data-i18n="lead_name">Sara M.</dd></div>
+          <div class="card-2 flex justify-between rounded-lg px-3 py-2"><dt class="text-white/50" data-i18n="lead_int_k">Interest</dt><dd class="font-semibold" data-i18n="lead_int">Teeth whitening</dd></div>
+          <div class="card-2 flex justify-between rounded-lg px-3 py-2"><dt class="text-white/50" data-i18n="lead_vis_k">Visit</dt><dd class="font-semibold" data-i18n="lead_vis">First time</dd></div>
+          <div class="card-2 flex justify-between rounded-lg px-3 py-2"><dt class="text-white/50" data-i18n="lead_st_k">Status</dt><dd class="font-semibold grad-text" data-i18n="lead_st">Qualified</dd></div>
+        </dl>
+        <p class="mt-3 flex items-center gap-1.5 text-[.75rem] text-white/40"><svg width="12" height="12" class="text-[#34A853]"><use href="#lg-googlesheets"/></svg><span data-i18n="lead_foot">Saved to Google Sheets automatically</span></p>
+      </div>
+      </div>
+
+      <!-- iPhone (3D) -->
+      <div id="phone3d" class="phone3d p3d z-10">
+      <div id="phoneEdges" class="p3d absolute inset-0" aria-hidden="true"></div>
+      <div class="iphone" role="img" aria-label="Animated WhatsApp conversation where an AI assistant for Smile Dental Care answers a patient and books a teeth whitening appointment">
+        <div class="screen">
+          <div class="island"></div>
+          <div class="flex items-center justify-between bg-[#1F2C34] px-7 pb-1 pt-3 text-[12px] font-semibold text-white" dir="ltr">
+            <span>9:41</span>
+            <span class="flex items-center gap-1"><svg width="16" height="10" viewBox="0 0 16 10" fill="#fff"><rect x="0" y="6" width="3" height="4" rx="1"/><rect x="4.5" y="4" width="3" height="6" rx="1"/><rect x="9" y="2" width="3" height="8" rx="1"/><rect x="13" y="0" width="3" height="10" rx="1"/></svg><svg width="22" height="11" viewBox="0 0 22 11" fill="none"><rect x=".5" y=".5" width="18" height="10" rx="3" stroke="#fff" opacity=".5"/><rect x="2" y="2" width="14" height="7" rx="1.6" fill="#fff"/><rect x="19.5" y="3.5" width="1.5" height="4" rx=".7" fill="#fff" opacity=".5"/></svg></span>
+          </div>
+          <div class="flex items-center gap-2.5 bg-[#1F2C34] px-3 pb-2.5 pt-2 text-start">
+            <svg class="flex-none text-[#8696A0] rtl:-scale-x-100" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+            <span class="grid h-9 w-9 flex-none place-items-center rounded-full grad-bg" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="#fff"><path d="M7.2 2.6c1.5 0 2.6.7 4.8.7s3.3-.7 4.8-.7c2.7 0 4.6 2.2 4.6 5.3 0 2.2-.8 3.6-1.4 5.3-.6 1.8-.8 3.6-1.3 5.6-.5 2.1-1.2 3.6-2.5 3.6-1.5 0-1.7-1.6-2-3.4-.3-1.6-.6-3-2.2-3s-1.9 1.4-2.2 3c-.3 1.8-.5 3.4-2 3.4-1.3 0-2-1.5-2.5-3.6-.5-2-.7-3.8-1.3-5.6C3.4 11.5 2.6 10.1 2.6 7.9c0-3.1 1.9-5.3 4.6-5.3z"/><path d="M8.5 6.4c1.2.5 2.3.7 3.5.7" stroke="#2879DB" stroke-width="1.3" stroke-linecap="round" fill="none" opacity=".6"/></svg></span>
+            <div class="min-w-0 flex-1 leading-tight">
+              <p class="flex items-center gap-1 truncate text-[14px] font-semibold text-[#E9EDEF]"><span class="truncate" data-i18n="wa_name">Smile Dental Care</span>
+                <svg class="flex-none" width="13" height="13" viewBox="0 0 24 24" fill="#25D366"><path d="M12 1l2.6 2.2 3.4-.4.9 3.3 3 1.7-1.2 3.2 1.2 3.2-3 1.7-.9 3.3-3.4-.4L12 23l-2.6-2.2-3.4.4-.9-3.3-3-1.7L3.3 13 2.1 9.8l3-1.7.9-3.3 3.4.4z"/><path d="M8 12l3 3 5-6" stroke="#0B141A" stroke-width="2.2" fill="none"/></svg></p>
+              <p id="waStatus" class="truncate text-[11.5px] text-[#8696A0]">Business account</p>
+            </div>
+            <svg class="flex-none text-[#AEBAC1]" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg>
+          </div>
+          <div id="chat" class="wa-bg flex flex-1 flex-col justify-end gap-1.5 overflow-hidden px-2.5 pb-2 pt-3 text-start" aria-hidden="true"></div>
+          <div class="flex items-center gap-2 bg-[#0B141A] px-2 pb-6 pt-1.5">
+            <div class="flex h-9 flex-1 items-center rounded-full bg-[#1F2C34] px-3.5 text-[13px] text-[#8696A0]" data-i18n="wa_input">Message</div>
+            <span class="grid h-9 w-9 place-items-center rounded-full bg-[#00A884]"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></span>
+          </div>
+        </div>
+      </div>
+      <div id="glare" class="glare" aria-hidden="true"></div>
+      </div>
+
+      <!-- side card: booking -->
+      <div class="absolute end-0 top-[300px] z-20 hidden lg:block xl:end-6" style="transform: translateZ(70px)">
+      <div id="sideBook" class="side card w-[19rem] rounded-2xl p-5 text-start">
+        <div class="flex items-center justify-between">
+          <p class="text-[.8rem] font-semibold text-white/50" data-i18n="book_h">Appointment</p>
+          <span class="flex items-center gap-1.5 text-[.72rem] font-semibold text-cyan"><span class="h-1.5 w-1.5 rounded-full bg-cyan"></span><span data-i18n="book_live">Synced</span></span>
+        </div>
+        <div class="mt-4 rounded-xl border border-white/10 bg-night p-4">
+          <p class="font-display text-lg font-bold" data-i18n="book_when">Thu, 4:00 PM</p>
+          <p class="text-[.85rem] text-white/60" data-i18n="book_what">Teeth whitening with Dr. Amel</p>
+          <div class="mt-3 h-1 rounded-full grad-bg"></div>
+        </div>
+        <ul class="mt-3 grid gap-1.5 text-[.8rem] text-white/60">
+          <li class="flex items-center gap-2"><svg width="13" height="13" class="flex-none text-[#4285F4]"><use href="#lg-googlecalendar"/></svg><span data-i18n="book_1">Added to Google Calendar</span></li>
+          <li class="flex items-center gap-2"><svg width="13" height="13" class="flex-none text-[#25D366]"><use href="#lg-whatsapp"/></svg><span data-i18n="book_2">Reminder scheduled for Wednesday</span></li>
+        </ul>
+      </div>
+      </div>
+    </div>
+    </div>
+
+    <div class="mt-8 flex flex-wrap items-center justify-center gap-3 text-sm text-white/50">
+      <span data-i18n="demo_note">Demo conversation. Same pipeline our clients run in production.</span>
+      <button type="button" id="replay" class="press btn-ghost inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-[.82rem] font-semibold">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg><span data-i18n="replay">Replay</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="mx-auto mt-14 max-w-6xl px-4 md:px-6">
+    <div class="flex flex-wrap items-center justify-center gap-x-10 gap-y-4 border-t border-white/[.06] pt-8 md:justify-between">
+      <span class="text-sm text-white/40" data-i18n="inprod">In production at</span>
+      <span class="font-display text-[1.05rem] font-bold text-white/70" dir="ltr">Super Smile Dental</span>
+      <span class="font-display text-[1.05rem] font-bold text-white/70" dir="ltr">Midtown Med Spa</span>
+      <span class="font-display text-[1.05rem] font-bold text-white/70" dir="ltr">Almabeauty_fr</span>
+      <span class="font-display text-[1.05rem] font-bold text-white/70" data-i18n="inprod_ecom">+10 Shopify stores</span>
+    </div>
+  </div>
+</section>
+
+<!-- ================= BENTO ================= -->
+<section class="py-24 md:py-28" aria-labelledby="bento-h">
+  <div class="mx-auto max-w-6xl px-4 md:px-6">
+    <h2 id="bento-h" class="max-w-2xl font-display text-3xl font-extrabold md:text-5xl" data-i18n="bento_t">One AI team for every message, call and follow-up.</h2>
+    <p class="mt-5 max-w-xl text-white/60" data-i18n="bento_s">Voicely plugs into your channels and your calendar. It answers, qualifies, books, and hands the hard cases to a person.</p>
+
+    <div class="mt-12 grid gap-4 md:grid-cols-3 md:gap-5">
+      <article class="card lift rounded-2xl p-6 md:col-span-2 md:p-7">
+        <h3 class="font-display text-lg font-bold" data-i18n="b1_t">AI DM setters on Instagram & WhatsApp</h3>
+        <p class="mt-2 max-w-md text-[.93rem] text-white/55" data-i18n="b1_d">Answers every patient or customer in seconds, in their language, and books them straight into your calendar.</p>
+        <div class="mt-6 grid items-center gap-4 sm:grid-cols-[1fr_auto_1fr]">
+          <div class="card-2 grid gap-2 rounded-xl p-3 text-[.82rem]">
+            <div class="flex items-center justify-between gap-2 rounded-lg bg-night px-3 py-2"><span class="flex items-center gap-2"><svg width="15" height="15" class="flex-none" style="color:#E4405F"><use href="#lg-instagram"/></svg><span data-i18n="b1_m1">How much is whitening?</span></span><span class="text-[.7rem] text-white/35">EN</span></div>
+            <div class="flex items-center justify-between gap-2 rounded-lg bg-night px-3 py-2"><span class="flex items-center gap-2"><svg width="15" height="15" class="flex-none" style="color:#25D366"><use href="#lg-whatsapp"/></svg><span dir="rtl">شحال سومة التبييض؟</span></span><span class="text-[.7rem] text-white/35" data-i18n="b1_darija">Darija</span></div>
+            <div class="flex items-center justify-between gap-2 rounded-lg bg-night px-3 py-2"><span class="flex items-center gap-2"><svg width="15" height="15" class="flex-none" style="color:#0099FF"><use href="#lg-messenger"/></svg><span dir="ltr">C'est combien le blanchiment ?</span></span><span class="text-[.7rem] text-white/35">FR</span></div>
+          </div>
+          <svg class="mx-auto rotate-90 text-white/30 sm:rotate-0 rtl:sm:-scale-x-100" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          <div class="grad-border rounded-xl p-4 text-[.82rem]">
+            <p class="font-semibold" data-i18n="b1_same">Same answer, same booking flow</p>
+            <p class="mt-1.5 font-mono text-[.72rem] text-white/50" dir="ltr">book_slot → Thu 16:00</p>
+          </div>
+        </div>
+      </article>
+      <article class="card lift flex flex-col rounded-2xl p-6 md:row-span-2 md:p-7">
+        <div class="flex items-center justify-between gap-3"><h3 class="font-display text-lg font-bold" data-i18n="b2_t">AI voice receptionist</h3><span class="rounded-full grad-bg px-2.5 py-0.5 text-[.72rem] font-bold" dir="ltr">24/7</span></div>
+        <p class="mt-3 flex items-center gap-2 text-[.75rem] text-white/45"><span data-i18n="b2_pw">Powered by</span><svg width="70" height="19" class="text-white" aria-label="Retell AI"><use href="#lg-retell"/></svg></p>
+        <p class="mt-2 text-[.93rem] text-white/55" data-i18n="b2_d">Built on Retell AI. Picks up every call, answers questions and books into your calendar, day and night.</p>
+        <div class="mt-6 flex h-24 items-center gap-[3px]" id="voiceEq" aria-hidden="true"></div>
+        <div class="mt-auto grid gap-2 pt-6 text-[.82rem]">
+          <div class="card-2 flex justify-between rounded-lg px-3 py-2"><span class="text-white/50" data-i18n="b2_k1">Calls answered</span><span class="font-semibold">100%</span></div>
+          <div class="card-2 flex justify-between rounded-lg px-3 py-2"><span class="text-white/50" data-i18n="b2_k2">Avg. pickup</span><span class="font-semibold" dir="ltr">&lt; 1s</span></div>
+          <div class="card-2 flex justify-between rounded-lg px-3 py-2"><span class="text-white/50" data-i18n="b2_k3">Speed-to-lead call</span><span class="font-semibold" data-i18n="b2_v3">within seconds</span></div>
+        </div>
+      </article>
+      <article class="card lift rounded-2xl p-6">
+        <h3 class="font-display text-lg font-bold" data-i18n="b3_t">Reminders & no-show follow-ups</h3>
+        <p class="mt-2 text-[.93rem] text-white/55" data-i18n="b3_d">Automatic reminders before every visit, and a polite follow-up when someone misses one.</p>
+        <div class="card-2 mt-5 flex items-center gap-3 rounded-xl px-3.5 py-3 text-[.82rem]"><span class="grid h-7 w-7 flex-none place-items-center rounded-full bg-cyan/15 text-cyan"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M5 3 2 6M19 3l3 3"/></svg></span><span data-i18n="b3_m">Reminder: whitening tomorrow at 4:00 PM</span></div>
+      </article>
+      <article class="card lift rounded-2xl p-6">
+        <h3 class="font-display text-lg font-bold" data-i18n="b4_t">Brings past patients back</h3>
+        <p class="mt-2 text-[.93rem] text-white/55" data-i18n="b4_d">Database reactivation with automated calls and messages to patients you haven't seen in months.</p>
+        <div class="card-2 mt-5 rounded-xl p-3 text-[.82rem]">
+          <p class="text-[.7rem] font-semibold text-white/40" data-i18n="b4_tpl">Reactivation template</p>
+          <p class="mt-1.5 rounded-lg bg-[#005C4B] px-3 py-2" data-i18n="b4_msg">It's been 6 months since your last check-up. Want us to save you a slot this week?</p>
+          <div class="mt-2 grid grid-cols-2 gap-2 text-center text-[.75rem] font-semibold"><span class="rounded-md bg-night py-1.5 text-cyan" data-i18n="b4_yes">Yes, book me</span><span class="rounded-md bg-night py-1.5 text-white/50" data-i18n="b4_no">Not now</span></div>
+        </div>
+      </article>
+      <article class="card lift rounded-2xl p-6 md:col-span-2">
+        <div class="grid gap-6 md:grid-cols-2 md:items-center">
+          <div>
+            <h3 class="font-display text-lg font-bold" data-i18n="b5_t">Knows when to hand over</h3>
+            <p class="mt-2 text-[.93rem] text-white/55" data-i18n="b5_d">Qualifies every lead, then passes complaints, emergencies and special requests to your team with the full conversation.</p>
+          </div>
+          <div class="card-2 rounded-xl p-3.5 text-[.82rem]">
+            <p class="rounded-lg bg-night px-3 py-2" data-i18n="b5_m">"I have strong tooth pain since last night"</p>
+            <p class="mt-2 flex items-center gap-2 rounded-lg border border-violet/40 bg-violet/10 px-3 py-2 text-white/85"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#a46cf0" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="flex-none"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0zM12 9v4M12 17h.01"/></svg><span data-i18n="b5_h">Urgent: assigned to reception with full history</span></p>
+          </div>
+        </div>
+      </article>
+      <article class="card rounded-2xl p-6 md:col-span-3">
+        <h3 class="font-display text-lg font-bold" data-i18n="b6_t">Works with the tools you already use</h3>
+        <p class="mt-1.5 text-[.93rem] text-white/55" data-i18n="b6_d">No migration. We connect Voicely to your channels, calendar and back office.</p>
+        <ul class="mt-5 flex flex-wrap gap-2 text-[.82rem] font-semibold text-white/75" dir="ltr">
+          <li class="card-2 flex items-center gap-2 rounded-lg px-3 py-2"><svg width="16" height="16" style="color:#25D366" aria-hidden="true"><use href="#lg-whatsapp"/></svg>WhatsApp Business</li><li class="card-2 flex items-center gap-2 rounded-lg px-3 py-2"><svg width="16" height="16" style="color:#E4405F" aria-hidden="true"><use href="#lg-instagram"/></svg>Instagram</li><li class="card-2 flex items-center gap-2 rounded-lg px-3 py-2"><svg width="16" height="16" style="color:#0099FF" aria-hidden="true"><use href="#lg-messenger"/></svg>Messenger</li><li class="card-2 flex items-center gap-2 rounded-lg px-3 py-2"><svg width="16" height="16" style="color:#ffffff" aria-hidden="true"><use href="#lg-retell-mark"/></svg>Retell AI</li><li class="card-2 flex items-center gap-2 rounded-lg px-3 py-2"><svg width="16" height="16" style="color:#ffffff" aria-hidden="true"><use href="#lg-openai"/></svg>OpenAI</li><li class="card-2 flex items-center gap-2 rounded-lg px-3 py-2"><svg width="16" height="16" style="color:#EA4B71" aria-hidden="true"><use href="#lg-n8n"/></svg>n8n</li><li class="card-2 flex items-center gap-2 rounded-lg px-3 py-2"><svg width="16" height="16" style="color:#4285F4" aria-hidden="true"><use href="#lg-googlecalendar"/></svg>Google Calendar</li><li class="card-2 flex items-center gap-2 rounded-lg px-3 py-2"><svg width="16" height="16" style="color:#34A853" aria-hidden="true"><use href="#lg-googlesheets"/></svg>Google Sheets</li><li class="card-2 flex items-center gap-2 rounded-lg px-3 py-2"><svg width="16" height="16" style="color:#7AB55C" aria-hidden="true"><use href="#lg-shopify"/></svg>Shopify</li><li class="card-2 flex items-center gap-2 rounded-lg px-3 py-2"><svg width="16" height="16" style="color:#3FCF8E" aria-hidden="true"><use href="#lg-supabase"/></svg>Supabase</li><li class="card-2 flex items-center gap-2 rounded-lg px-3 py-2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#A6A7AD" stroke-width="2" stroke-linecap="round" aria-hidden="true"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg>CRM</li>
+        </ul>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ================= COMPARISON ================= -->
+<section id="why" class="py-24 md:py-28" aria-labelledby="why-h">
+  <div class="mx-auto max-w-6xl px-4 md:px-6">
+    <h2 id="why-h" class="font-display text-3xl font-extrabold md:text-5xl" data-i18n="why_t">Why not a regular chatbot?</h2>
+    <p class="mt-5 max-w-xl text-white/60" data-i18n="why_s">Most chatbot builders follow flows you draw yourself. Your patients don't write like a flowchart.</p>
+    <div class="mt-12 overflow-x-auto rounded-2xl border border-white/[.08]">
+      <table class="w-full min-w-[640px] border-collapse text-[.92rem]">
+        <thead>
+          <tr class="text-[.82rem] text-white/45">
+            <th class="w-[34%] px-5 py-4 text-start font-semibold" data-i18n="why_c1">What you need</th>
+            <th class="w-[30%] px-5 py-4 text-start font-semibold" data-i18n="why_c2">Typical chatbot builder</th>
+            <th class="hl w-[36%] px-5 py-4 text-start font-display font-bold text-white" dir="ltr">Voicely.ai</th>
+          </tr>
+        </thead>
+        <tbody id="whyRows"></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ================= STEPS ================= -->
+<section class="py-24 md:py-28" aria-labelledby="steps-h">
+  <div class="mx-auto max-w-6xl px-4 md:px-6">
+    <h2 id="steps-h" class="max-w-xl font-display text-3xl font-extrabold md:text-5xl" data-i18n="steps_t">From first message to live agent.</h2>
+    <ol class="mt-12 grid gap-8 md:grid-cols-3 md:gap-5">
+      <li class="border-t border-white/10 pt-6"><p class="font-display text-sm font-bold grad-text w-max">01</p><h3 class="mt-3 font-display text-lg font-bold" data-i18n="st1_t">Connect your channels</h3><p class="mt-2 text-[.93rem] text-white/55" data-i18n="st1_d">WhatsApp Business, Instagram, your phone line and your calendar. Your numbers and pages stay yours.</p></li>
+      <li class="border-t border-white/10 pt-6"><p class="font-display text-sm font-bold grad-text w-max">02</p><h3 class="mt-3 font-display text-lg font-bold" data-i18n="st2_t">We train it on your business</h3><p class="mt-2 text-[.93rem] text-white/55" data-i18n="st2_d">Services, prices, opening hours, doctors and booking rules. Change a price and the agent knows.</p></li>
+      <li class="border-t border-white/10 pt-6"><p class="font-display text-sm font-bold grad-text w-max">03</p><h3 class="mt-3 font-display text-lg font-bold" data-i18n="st3_t">Go live and watch it book</h3><p class="mt-2 text-[.93rem] text-white/55" data-i18n="st3_d">Every conversation is logged. Your team sees what the agent said and can take over any chat.</p></li>
+    </ol>
+  </div>
+</section>
+
+<!-- ================= CASE STUDIES ================= -->
+<section id="clients" class="py-24 md:py-28" aria-labelledby="cs-h">
+  <div class="mx-auto max-w-6xl px-4 md:px-6">
+    <h2 id="cs-h" class="font-display text-3xl font-extrabold md:text-5xl" data-i18n="cs_t">Running in production.</h2>
+    <p class="mt-5 max-w-xl text-white/60" data-i18n="cs_s">Clinics and brands that handed their repetitive messages and calls to Voicely.</p>
+    <div class="mt-12 grid gap-4 md:grid-cols-3 md:gap-5" id="cases"></div>
+    <p class="mt-6 text-sm text-white/45" data-i18n="cs_also">Also running at 10 e-commerce stores: AI chatbots that generated 1.5M DZD (~$6,000) in combined revenue.</p>
+
+    <!-- Results calendar -->
+    <div class="mt-16 grid items-center gap-10 lg:grid-cols-12 lg:gap-16">
+      <div class="lg:col-span-6">
+        <h3 class="font-display text-2xl font-extrabold md:text-4xl" data-i18n="rc_t">What 5 days of an AI DM setter looks like.</h3>
+        <p class="mt-4 max-w-md text-white/60" data-i18n="rc_s">Super Smile Dental Clinic, launch month. Every check is a day the AI answered Instagram DMs and booked patients on its own. Tap a day to see how many.</p>
+        <ul class="mt-6 grid gap-2.5 text-sm text-white/60">
+          <li class="flex items-center gap-3"><span class="grid h-6 w-6 place-items-center rounded-md bg-cyan/15 text-[.7rem] font-bold text-[#7fe3f5]">8</span><span data-i18n="rc_l1">Day with appointments booked by AI</span></li>
+          <li class="flex items-center gap-3"><span class="grid h-6 w-6 place-items-center rounded-md text-[.7rem] text-white/40 opacity-40">20</span><span data-i18n="rc_l2">Before launch</span></li>
+        </ul>
+      </div>
+      <div class="lg:col-span-6">
+        <div class="card mx-auto w-full max-w-md rounded-2xl p-4 sm:p-5" id="resultsCal">
+          <div class="flex items-center justify-between px-1">
+            <button type="button" class="press grid h-8 w-8 place-items-center rounded-lg border border-white/10 text-white/50" disabled aria-label="Previous month"><svg class="rtl:-scale-x-100" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+            <div class="text-center leading-tight"><p class="font-display text-[.95rem] font-bold" dir="ltr">Super Smile Dental Clinic</p><p class="text-xs text-white/45" data-i18n="rc_month">Launch month</p></div>
+            <button type="button" class="press grid h-8 w-8 place-items-center rounded-lg border border-white/10 text-white/50" disabled aria-label="Next month"><svg class="rtl:-scale-x-100" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></button>
+          </div>
+          <div class="mt-4 grid grid-cols-7 gap-1 text-center text-[.72rem] font-semibold text-white/40" id="rcHead"></div>
+          <div class="mt-1.5 grid grid-cols-7 gap-1" id="rcGrid" role="grid"></div>
+          <div class="mt-4 flex items-center justify-between gap-3 rounded-xl border border-white/10 px-4 py-3 text-sm">
+            <span class="text-white/55" id="rcLabel"></span>
+            <span class="font-display font-bold" id="rcValue" dir="ltr"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SERVICES ================= -->
+<section id="services" class="py-24 md:py-28" aria-labelledby="svc-h">
+  <div class="mx-auto max-w-6xl px-4 md:px-6">
+    <h2 id="svc-h" class="max-w-2xl font-display text-3xl font-extrabold md:text-5xl" data-i18n="svc_t">One engine, built for your industry.</h2>
+    <p class="mt-5 max-w-xl text-white/60" data-i18n="svc_s">Everything runs on the same AI and integrations that power our clients' results.</p>
+    <div class="mt-12 grid gap-4 md:grid-cols-2 md:gap-5 xl:grid-cols-4" id="offers"></div>
+  </div>
+</section>
+
+<!-- ================= ABOUT ================= -->
+<section id="about" class="py-24 md:py-28" aria-labelledby="ab-h">
+  <div class="mx-auto grid max-w-6xl gap-10 px-4 md:grid-cols-2 md:gap-16 md:px-6">
+    <h2 id="ab-h" class="font-display text-3xl font-extrabold md:text-5xl" data-i18n="ab_t">Built for businesses that live in the DMs.</h2>
+    <div class="text-white/65">
+      <p class="font-semibold text-white" data-i18n="ab_p1">Your clients message at 11 PM, on a Sunday, in three languages at once. They book with whoever answers first.</p>
+      <p class="mt-5" data-i18n="ab_p2">We started Voicely.ai to make sure that's you. We build AI systems with n8n, Retell AI, OpenAI and the WhatsApp and Instagram APIs, and we stay with you after launch to keep them improving.</p>
+      <div class="mt-8 flex items-center gap-3">
+        <span class="grid h-11 w-11 flex-none place-items-center rounded-full grad-bg font-display font-extrabold" aria-hidden="true" dir="ltr">MC</span>
+        <span class="leading-tight"><span class="block font-semibold text-white" data-i18n="ab_name">Massinissa Chabane</span><span class="text-sm text-white/45" data-i18n="ab_role">Founder, Voicely.ai</span></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CTA FORM ================= -->
+<section id="book" class="px-4 pb-24 md:px-6 md:pb-28" aria-labelledby="book-t">
+  <div class="relative mx-auto max-w-6xl overflow-hidden rounded-3xl border border-white/10 bg-night-1 px-3 py-7 sm:p-7 md:p-12" style="box-shadow:var(--sh-2)">
+    <div aria-hidden="true" class="pointer-events-none absolute inset-0" style="background: radial-gradient(50% 70% at 0% 0%, rgba(24,200,232,.14), transparent 70%), radial-gradient(50% 80% at 100% 100%, rgba(112,41,201,.22), transparent 70%);"></div>
+    <div class="relative grid gap-10 lg:grid-cols-12 lg:gap-12">
+      <div class="px-2 sm:px-0 lg:col-span-4">
+        <h2 id="book-t" class="font-display text-3xl font-extrabold md:text-[2.6rem]" data-i18n="cta_t">Book your free discovery call.</h2>
+        <p class="mt-5 max-w-md text-white/65" data-i18n="cta_s">Pick a time that suits you. In 30 minutes we look at your messages and calls and show you exactly what an AI agent would take off your plate.</p>
+        <ul class="mt-7 grid gap-3 text-white/80">
+          <li class="flex items-center gap-3"><span class="grid h-6 w-6 flex-none place-items-center rounded-full grad-bg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><span data-i18n="bk_1">Free, no commitment</span></li>
+          <li class="flex items-center gap-3"><span class="grid h-6 w-6 flex-none place-items-center rounded-full grad-bg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><span data-i18n="bk_2">A plan built around your clinic or store</span></li>
+          <li class="flex items-center gap-3"><span class="grid h-6 w-6 flex-none place-items-center rounded-full grad-bg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><span data-i18n="bk_3">In Arabic, French or English</span></li>
+        </ul>
+        <p class="mt-8 text-sm text-white/50"><span data-i18n="cal_fb1">Calendar not loading?</span> <a href="https://cal.com/massinissa-chabane-knsxep/%D9%85%D9%83%D8%A7%D9%84%D9%85%D8%A9-%D8%A7%D8%B3%D8%AA%D9%83%D8%B4%D8%A7%D9%81%D9%8A%D8%A9-%D9%85%D8%AC%D8%A7%D9%86%D9%8A%D8%A9" target="_blank" rel="noopener" class="link-u font-semibold text-white" data-i18n="cal_fb2">Open the booking page</a></p>
+      </div>
+      <div class="lg:col-span-8">
+        <div id="cal-inline" class="min-h-[640px] w-full rounded-2xl bg-night/60 sm:border sm:border-white/10"></div>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<!-- ================= FOOTER ================= -->
+<footer class="border-t border-white/[.06]">
+  <div class="mx-auto grid max-w-6xl gap-10 px-4 py-14 md:grid-cols-12 md:px-6">
+    <div class="md:col-span-6">
+      <a href="#top" class="press inline-flex items-center gap-2.5 rounded-xl">
+        <span class="logo-icon h-8 w-8" style="--s:32px"><img src="my_brand_guideline/logoss.png" alt=""></span>
+        <span class="font-display font-extrabold" dir="ltr">Voicely<span class="text-[.8em] text-mist">.ai</span></span>
+      </a>
+      <p class="mt-4 max-w-xs text-sm text-white/50" data-i18n="ft_tag">AI agents for businesses that sell in the DMs and on the phone.</p>
+    </div>
+    <div class="grid grid-cols-3 gap-6 text-sm md:col-span-6">
+      <div><p class="font-semibold" data-i18n="ft_c1">Product</p><ul class="mt-4 grid gap-2.5 text-white/50"><li><a class="link-u hover:text-white" href="#product" data-i18n="ft_l1">DM setter</a></li><li><a class="link-u hover:text-white" href="#services" data-i18n="ft_l2">Voice agents</a></li><li><a class="link-u hover:text-white" href="#why" data-i18n="nav_why">Why Voicely</a></li></ul></div>
+      <div><p class="font-semibold" data-i18n="ft_c2">Company</p><ul class="mt-4 grid gap-2.5 text-white/50"><li><a class="link-u hover:text-white" href="#about" data-i18n="nav_about">About</a></li><li><a class="link-u hover:text-white" href="#clients" data-i18n="nav_clients">Clients</a></li><li><a class="link-u hover:text-white" href="#book" data-i18n="nav_contact">Contact</a></li></ul></div>
+      <div><p class="font-semibold" data-i18n="ft_c3">Contact</p><ul class="mt-4 grid gap-2.5 text-white/50" dir="ltr"><li><a class="link-u hover:text-white" href="#">WhatsApp</a></li><li><a class="link-u hover:text-white" href="#">Email</a></li><li><a class="link-u hover:text-white" href="#">Instagram</a></li></ul></div>
+    </div>
+  </div>
+  <div class="mx-auto flex max-w-6xl justify-between border-t border-white/[.06] px-4 py-6 text-xs text-white/35 md:px-6">
+    <p dir="ltr">© 2026 Voicely.ai</p><p data-i18n="ft_loc">AI Agency</p>
+  </div>
+</footer>
+
+<script>
+/* ================= i18n ================= */
+const T = {
+  en: {
+    lang_switch: 'عربي',
+    nav_product: 'Product', nav_why: 'Why Voicely', nav_clients: 'Clients', nav_services: 'Services', nav_about: 'About', nav_contact: 'Contact', nav_cta: 'Get a demo',
+    pill_tag: 'Live', pill: '32 appointments booked in 5 days for a dental clinic',
+    hero_t1: 'AI agents that book clients', hero_t2: 'while you sleep.',
+    hero_sub: 'We build AI DM setters, voice receptionists and automations with n8n, Retell AI, OpenAI and the WhatsApp and Instagram APIs. Your business never misses a lead, answers every message in seconds and books more appointments automatically.',
+    hero_cta: 'Get a demo', hero_cta2: 'See what it does', hero_note: 'For clinics, med spas and e-commerce brands',
+    lead_h: 'New lead', lead_name_k: 'Patient', lead_name: 'Sara M.', lead_int_k: 'Interest', lead_int: 'Teeth whitening', lead_vis_k: 'Visit', lead_vis: 'First time', lead_st_k: 'Status', lead_st: 'Qualified', lead_foot: 'Saved to Google Sheets automatically',
+    wa_name: 'Smile Dental Care', wa_status: 'Business account', wa_typing: 'typing…', wa_input: 'Message', wa_add: 'Add to calendar',
+    book_h: 'Appointment', book_live: 'Synced', book_when: 'Thu, 4:00 PM', book_what: 'Teeth whitening with Dr. Amel', book_1: 'Added to Google Calendar', book_2: 'Reminder scheduled for Wednesday',
+    demo_note: 'Demo conversation. Same pipeline our clients run in production.', replay: 'Replay',
+    inprod: 'In production at', inprod_ecom: '+10 Shopify stores',
+    bento_t: 'One AI team for every message, call and follow-up.', bento_s: 'Voicely plugs into your channels and your calendar. It answers, qualifies, books, and hands the hard cases to a person.',
+    b1_t: 'AI DM setters on Instagram & WhatsApp', b1_d: 'Answers every patient or customer in seconds, in their language, and books them straight into your calendar.', b1_m1: 'How much is whitening?', b1_darija: 'Darija', b1_same: 'Same answer, same booking flow',
+    b2_t: 'AI voice receptionist', b2_d: 'Built on Retell AI. Picks up every call, answers questions and books into your calendar, day and night.', b2_k1: 'Calls answered', b2_k2: 'Avg. pickup', b2_k3: 'Speed-to-lead call', b2_v3: 'within seconds',
+    b3_t: 'Reminders & no-show follow-ups', b3_d: 'Automatic reminders before every visit, and a polite follow-up when someone misses one.', b3_m: 'Reminder: whitening tomorrow at 4:00 PM',
+    b4_t: 'Brings past patients back', b4_d: "Database reactivation with automated calls and messages to patients you haven't seen in months.", b4_tpl: 'Reactivation template', b4_msg: "It's been 6 months since your last check-up. Want us to save you a slot this week?", b4_yes: 'Yes, book me', b4_no: 'Not now',
+    b5_t: 'Knows when to hand over', b5_d: 'Qualifies every lead, then passes complaints, emergencies and special requests to your team with the full conversation.', b5_m: '"I have strong tooth pain since last night"', b5_h: 'Urgent: assigned to reception with full history',
+    b6_t: 'Works with the tools you already use', b6_d: 'No migration. We connect Voicely to your channels, calendar and back office.',
+    why_t: 'Why not a regular chatbot?', why_s: "Most chatbot builders follow flows you draw yourself. Your patients don't write like a flowchart.", why_c1: 'What you need', why_c2: 'Typical chatbot builder',
+    why: [
+      ['Replies in Darija, Arabic, French and English', 'Built for English or formal Arabic', 'Understands dialects and mixed-language messages'],
+      ['Books into your real calendar', 'Sends a booking link and hopes', 'Checks live availability and confirms the slot in the chat'],
+      ['Answers calls, not just messages', 'Text only', 'AI voice receptionist on Retell AI, 24/7'],
+      ['Reminders and no-show follow-ups', 'Separate tool you set up yourself', 'Built in, sent automatically on WhatsApp'],
+      ['A person can step in', 'Customer starts over with your team', 'Handoff with the full conversation history'],
+      ['Setup', 'You configure everything', 'We build it on your services and prices for you'],
+    ],
+    steps_t: 'From first message to live agent.',
+    st1_t: 'Connect your channels', st1_d: 'WhatsApp Business, Instagram, your phone line and your calendar. Your numbers and pages stay yours.',
+    st2_t: 'We train it on your business', st2_d: 'Services, prices, opening hours, doctors and booking rules. Change a price and the agent knows.',
+    st3_t: 'Go live and watch it book', st3_d: 'Every conversation is logged. Your team sees what the agent said and can take over any chat.',
+    cs_t: 'Running in production.', cs_s: 'Clinics and brands that handed their repetitive messages and calls to Voicely.',
+    cases: [
+      { n: 'Super Smile Dental Clinic', k: 'Dental clinic', stat: '32', unit: 'appointments in 5 days', h: 'DMs piled up faster than the front desk could reply.', d: 'An AI Instagram DM setter now answers every patient in seconds, handles price questions and books them into the calendar.', tags: ['Instagram DM setter', 'Booking', 'Lead qualification'] },
+      { n: 'Midtown Med Spa', k: 'Med spa, Toronto', stat: '24/7', unit: 'calls answered', h: 'After-hours calls went to voicemail and were never returned.', d: 'An AI receptionist picks up every call, answers treatment questions and books consultations into the calendar.', tags: ['Voice receptionist', 'Retell AI', 'Calendar'] },
+      { n: 'Almabeauty_fr', k: 'Beauty e-commerce', stat: '800K DZD', unit: '(~$3,200) in 7 days', h: 'The same questions all day: price, delivery, sizes.', d: 'An AI chatbot replies on Instagram and WhatsApp, sends the product link and confirms the order.', tags: ['E-commerce chatbot', 'Order confirmation', 'WhatsApp'] },
+    ],
+    rc_t: 'What 5 days of an AI DM setter looks like.', rc_s: 'Super Smile Dental Clinic, launch month. Every check is a day the AI answered Instagram DMs and booked patients on its own. Tap a day to see how many.', rc_l1: 'Day with appointments booked by AI', rc_l2: 'Before launch', rc_month: 'Launch month', rc_week: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'], rc_total: 'Appointments booked by AI', rc_days: 'days', rc_day: 'Day {d}: appointments booked', rc_aria: 'Day {d}, {n} appointments booked by AI',
+    cs_also: 'Also running at 10 e-commerce stores: AI chatbots that generated 1.5M DZD (~$6,000) in combined revenue.',
+    svc_t: 'One engine, built for your industry.', svc_s: "Everything runs on the same AI and integrations that power our clients' results.",
+    offers: [
+      { t: 'Dental, Med Spa & Aesthetic Clinics', badge: 'Most booked', items: ['AI DM setters on Instagram & WhatsApp that answer patients and book appointments', 'AI voice receptionists (Retell AI) that answer calls 24/7 and book into your calendar', 'Appointment reminders and no-show follow-ups', 'Database reactivation: bring past patients back', 'Lead qualification and handoff to your team'], cta: 'Get a demo' },
+      { t: 'E-commerce Automation (Shopify)', items: ['AI chatbots on Instagram, Messenger and WhatsApp that send the product link', 'Automated order confirmation to reduce fake orders and returns', 'Order tracking with WhatsApp status notifications', 'Abandoned cart recovery', 'FAQ automation: price, delivery, exchanges, human handoff'], cta: 'Get a demo' },
+      { t: 'AI Voice Agents & Speed-to-Lead', items: ['Inbound AI receptionists', 'Speed-to-lead: call new leads within seconds of a form submission', 'Outbound reactivation campaigns with consent and calling-hours rules'], cta: 'Get a demo' },
+      { t: 'Business Process & CRM Automation', items: ['n8n workflows connecting your CRM, Google Sheets, Calendar, Supabase, webhooks and APIs', 'Automated notifications, reporting and data entry', 'Custom AI agents for your specific process'], cta: 'Talk to us' },
+    ],
+    ab_t: 'Built for businesses that live in the DMs.',
+    ab_p1: 'Your clients message at 11 PM, on a Sunday, in three languages at once. They book with whoever answers first.',
+    ab_p2: "We started Voicely.ai to make sure that's you. We build AI systems with n8n, Retell AI, OpenAI and the WhatsApp and Instagram APIs, and we stay with you after launch to keep them improving.",
+    ab_name: 'Massinissa Chabane', ab_role: 'Founder, Voicely.ai',
+    cta_t: 'Book your free discovery call.', cta_s: 'Pick a time that suits you. In 30 minutes we look at your messages and calls and show you exactly what an AI agent would take off your plate.', bk_1: 'Free, no commitment', bk_2: 'A plan built around your clinic or store', bk_3: 'In Arabic, French or English', cal_fb1: 'Calendar not loading?', cal_fb2: 'Open the booking page', cal_m_t: '30-minute discovery call', cal_m_d: 'Free, on Google Meet. Pick the day and time that suit you.', cal_m_cta: 'Choose a time', b2_pw: 'Powered by',
+    ft_tag: 'AI agents for businesses that sell in the DMs and on the phone.', ft_c1: 'Product', ft_c2: 'Company', ft_c3: 'Contact', ft_l1: 'DM setter', ft_l2: 'Voice agents', ft_loc: 'AI Agency',
+    script: [
+      ['p', 'Hi! How much is teeth whitening?'],
+      ['a', 'Hi Sara! Professional whitening at Smile Dental Care is $180–$250, depending on the shade you want. Is this your first visit with us?'],
+      ['p', 'Yes, first time'],
+      ['a', 'Welcome! Your first visit includes a free check-up. I have Thursday 4:00 PM or Saturday 10:30 AM. Which works better?', 'lead'],
+      ['p', 'Thursday 4pm please'],
+      ['card', 'Appointment booked|Teeth whitening, Thu 4:00 PM|Dr. Amel, Smile Dental Care'],
+      ['a', "You're all set! I'll send you a reminder the day before. See you Thursday.", 'book'],
+    ],
+  },
+  ar: {
+    lang_switch: 'English',
+    nav_product: 'المنتج', nav_why: 'لماذا Voicely', nav_clients: 'عملاؤنا', nav_services: 'الخدمات', nav_about: 'من نحن', nav_contact: 'تواصل', nav_cta: 'احصل على عرض',
+    pill_tag: 'مباشر', pill: '32 موعداً محجوزاً في 5 أيام لعيادة أسنان',
+    hero_t1: 'وكلاء أذكياء يحجزون عملاءك', hero_t2: 'وأنت نائم.',
+    hero_sub: 'نبني مساعدي رسائل بالذكاء الاصطناعي، وموظفي استقبال صوتيين، وأتمتة كاملة باستخدام n8n وRetell AI وOpenAI وواجهات واتساب وإنستغرام. لن تفوّت أي عميل، وسترد على كل رسالة في ثوانٍ، وستحجز مواعيد أكثر تلقائياً.',
+    hero_cta: 'احصل على عرض', hero_cta2: 'شاهد ما يفعله', hero_note: 'للعيادات ومراكز التجميل ومتاجر التجارة الإلكترونية',
+    lead_h: 'عميل جديد', lead_name_k: 'المريضة', lead_name: 'سارة م.', lead_int_k: 'الاهتمام', lead_int: 'تبييض الأسنان', lead_vis_k: 'الزيارة', lead_vis: 'الأولى', lead_st_k: 'الحالة', lead_st: 'مؤهَّلة', lead_foot: 'حُفظت تلقائياً في Google Sheets',
+    wa_name: 'عيادة سمايل لطب الأسنان', wa_status: 'حساب تجاري', wa_typing: 'يكتب…', wa_input: 'رسالة', wa_add: 'أضف إلى التقويم',
+    book_h: 'الموعد', book_live: 'متزامن', book_when: 'الخميس، 4:00 مساءً', book_what: 'تبييض الأسنان مع د. أمل', book_1: 'أُضيف إلى Google Calendar', book_2: 'تذكير مجدول يوم الأربعاء',
+    demo_note: 'محادثة تجريبية، بنفس النظام الذي يعمل لدى عملائنا.', replay: 'إعادة',
+    inprod: 'يعمل حالياً لدى', inprod_ecom: '+10 متاجر Shopify',
+    bento_t: 'فريق ذكاء اصطناعي لكل رسالة ومكالمة ومتابعة.', bento_s: 'يتصل Voicely بقنواتك وتقويمك. يرد، ويؤهّل، ويحجز، ويحوّل الحالات الصعبة إلى شخص من فريقك.',
+    b1_t: 'مساعد رسائل على إنستغرام وواتساب', b1_d: 'يرد على كل مريض أو عميل في ثوانٍ، بلغته، ويحجز له مباشرة في تقويمك.', b1_m1: 'كم سعر التبييض؟', b1_darija: 'دارجة', b1_same: 'نفس الإجابة، نفس مسار الحجز',
+    b2_t: 'موظف استقبال صوتي ذكي', b2_d: 'مبني على Retell AI. يرد على كل مكالمة، ويجيب عن الأسئلة، ويحجز في تقويمك ليلاً ونهاراً.', b2_k1: 'المكالمات المُجاب عنها', b2_k2: 'متوسط الرد', b2_k3: 'الاتصال بالعميل الجديد', b2_v3: 'خلال ثوانٍ',
+    b3_t: 'تذكيرات ومتابعة الغياب', b3_d: 'تذكير تلقائي قبل كل موعد، ومتابعة لطيفة عندما يفوّت أحدهم موعده.', b3_m: 'تذكير: موعد التبييض غداً الساعة 4:00 مساءً',
+    b4_t: 'يعيد المرضى القدامى', b4_d: 'إعادة تنشيط قاعدة بياناتك بمكالمات ورسائل تلقائية للمرضى الذين لم تَرَهم منذ أشهر.', b4_tpl: 'قالب إعادة التنشيط', b4_msg: 'مرّت 6 أشهر على آخر فحص لك. هل نحجز لك موعداً هذا الأسبوع؟', b4_yes: 'نعم، احجز لي', b4_no: 'ليس الآن',
+    b5_t: 'يعرف متى يحوّل المحادثة', b5_d: 'يؤهّل كل عميل، ثم يحوّل الشكاوى والحالات الطارئة والطلبات الخاصة إلى فريقك مع المحادثة كاملة.', b5_m: '«عندي ألم شديد في ضرسي منذ البارحة»', b5_h: 'عاجل: حُوّلت إلى الاستقبال مع السجل الكامل',
+    b6_t: 'يعمل مع أدواتك الحالية', b6_d: 'بلا نقل بيانات. نربط Voicely بقنواتك وتقويمك وأنظمتك.',
+    why_t: 'لماذا ليس روبوت محادثة عادياً؟', why_s: 'معظم أدوات الروبوتات تتبع مسارات ترسمها بنفسك. ومرضاك لا يكتبون وفق مخطط.', why_c1: 'ما تحتاجه', why_c2: 'روبوت محادثة تقليدي',
+    why: [
+      ['الرد بالدارجة والعربية والفرنسية والإنجليزية', 'مصمم للإنجليزية أو العربية الفصحى', 'يفهم اللهجات والرسائل المختلطة'],
+      ['الحجز في تقويمك الحقيقي', 'يرسل رابط حجز وينتظر', 'يتحقق من المواعيد المتاحة ويؤكد الحجز داخل المحادثة'],
+      ['الرد على المكالمات وليس الرسائل فقط', 'نص فقط', 'موظف استقبال صوتي على Retell AI على مدار الساعة'],
+      ['التذكيرات ومتابعة الغياب', 'أداة منفصلة تُعدّها بنفسك', 'مدمجة وتُرسل تلقائياً على واتساب'],
+      ['تدخّل شخص من الفريق', 'يبدأ العميل من جديد مع فريقك', 'تحويل مع سجل المحادثة كاملاً'],
+      ['الإعداد', 'تُعدّ كل شيء بنفسك', 'نبنيه لك على خدماتك وأسعارك'],
+    ],
+    steps_t: 'من أول رسالة إلى وكيل يعمل.',
+    st1_t: 'اربط قنواتك', st1_d: 'واتساب للأعمال، وإنستغرام، وخط هاتفك، وتقويمك. أرقامك وصفحاتك تبقى ملكك.',
+    st2_t: 'ندرّبه على عملك', st2_d: 'الخدمات والأسعار وساعات العمل والأطباء وقواعد الحجز. غيّر سعراً وسيعرفه الوكيل.',
+    st3_t: 'أطلقه وشاهده يحجز', st3_d: 'كل محادثة مسجّلة. يرى فريقك ما قاله الوكيل ويمكنه تولّي أي محادثة.',
+    cs_t: 'يعمل في الواقع.', cs_s: 'عيادات وعلامات تجارية سلّمت رسائلها ومكالماتها المتكررة إلى Voicely.',
+    cases: [
+      { n: 'Super Smile Dental Clinic', k: 'عيادة أسنان', stat: '32', unit: 'موعداً في 5 أيام', h: 'تراكمت الرسائل أسرع مما يستطيع الاستقبال الرد عليه.', d: 'مساعد رسائل ذكي على إنستغرام يرد الآن على كل مريض في ثوانٍ، ويجيب عن الأسعار، ويحجز في التقويم.', tags: ['مساعد رسائل إنستغرام', 'حجز', 'تأهيل العملاء'] },
+      { n: 'Midtown Med Spa', k: 'مركز تجميل، تورونتو', stat: '24/7', unit: 'رد على المكالمات', h: 'المكالمات بعد الدوام كانت تذهب إلى البريد الصوتي ولا يُعاد الاتصال.', d: 'موظف استقبال ذكي يرد على كل مكالمة، ويجيب عن أسئلة العلاجات، ويحجز الاستشارات في التقويم.', tags: ['استقبال صوتي', 'Retell AI', 'التقويم'] },
+      { n: 'Almabeauty_fr', k: 'تجارة إلكترونية للتجميل', stat: '800K DZD', unit: '(~3,200$) في 7 أيام', h: 'نفس الأسئلة طوال اليوم: السعر، التوصيل، المقاسات.', d: 'روبوت ذكي يرد على إنستغرام وواتساب، ويرسل رابط المنتج، ويؤكد الطلب.', tags: ['روبوت متجر', 'تأكيد الطلبات', 'واتساب'] },
+    ],
+    rc_t: 'هكذا تبدو 5 أيام من مساعد الرسائل الذكي.', rc_s: 'عيادة Super Smile لطب الأسنان، شهر الإطلاق. كل علامة هي يوم ردّ فيه الذكاء الاصطناعي على رسائل إنستغرام وحجز المرضى بمفرده. اضغط على يوم لترى العدد.', rc_l1: 'يوم فيه مواعيد حجزها الذكاء الاصطناعي', rc_l2: 'قبل الإطلاق', rc_month: 'شهر الإطلاق', rc_week: ['أحد', 'إثنين', 'ثلاثاء', 'أربعاء', 'خميس', 'جمعة', 'سبت'], rc_total: 'مواعيد حجزها الذكاء الاصطناعي', rc_days: 'أيام', rc_day: 'اليوم {d}: مواعيد محجوزة', rc_aria: 'اليوم {d}، {n} مواعيد حجزها الذكاء الاصطناعي',
+    cs_also: 'ويعمل أيضاً لدى 10 متاجر إلكترونية: روبوتات ذكية حققت 1.5 مليون دج (~6,000$) من المبيعات مجتمعة.',
+    svc_t: 'محرك واحد، مصمم لمجالك.', svc_s: 'كل شيء يعمل على نفس الذكاء الاصطناعي والتكاملات التي صنعت نتائج عملائنا.',
+    offers: [
+      { t: 'عيادات الأسنان والتجميل', badge: 'الأكثر حجزاً', items: ['مساعد رسائل على إنستغرام وواتساب يرد على المرضى ويحجز المواعيد', 'موظف استقبال صوتي (Retell AI) يرد على المكالمات 24/7 ويحجز في تقويمك', 'تذكير بالمواعيد ومتابعة الغياب', 'إعادة تنشيط قاعدة البيانات: إعادة المرضى القدامى', 'تأهيل العملاء وتحويلهم إلى فريقك'], cta: 'احصل على عرض' },
+      { t: 'أتمتة التجارة الإلكترونية (Shopify)', items: ['روبوتات على إنستغرام وماسنجر وواتساب ترسل رابط المنتج', 'تأكيد الطلبات تلقائياً لتقليل الطلبات الوهمية والمرتجعات', 'تتبع الطلبات مع إشعارات الحالة على واتساب', 'استرجاع السلات المتروكة', 'أتمتة الأسئلة الشائعة: السعر، التوصيل، الاستبدال، التحويل لموظف'], cta: 'احصل على عرض' },
+      { t: 'وكلاء صوتيون وسرعة الاستجابة', items: ['موظفو استقبال صوتيون للمكالمات الواردة', 'سرعة الاستجابة: الاتصال بالعميل خلال ثوانٍ من ملء النموذج', 'حملات اتصال لإعادة التنشيط مع احترام الموافقة وأوقات الاتصال'], cta: 'احصل على عرض' },
+      { t: 'أتمتة العمليات وCRM', items: ['مسارات n8n تربط CRM وGoogle Sheets والتقويم وSupabase والواجهات البرمجية', 'إشعارات وتقارير وإدخال بيانات تلقائي', 'وكلاء ذكاء اصطناعي مخصصون لعمليتك'], cta: 'تحدّث معنا' },
+    ],
+    ab_t: 'مصمم للأعمال التي تعيش في الرسائل.',
+    ab_p1: 'عملاؤك يراسلونك الساعة 11 ليلاً، يوم الأحد، وبثلاث لغات في آن واحد. ويحجزون مع من يرد أولاً.',
+    ab_p2: 'أسسنا Voicely.ai لنتأكد أنك أنت من يرد أولاً. نبني أنظمة ذكاء اصطناعي باستخدام n8n وRetell AI وOpenAI وواجهات واتساب وإنستغرام، ونبقى معك بعد الإطلاق لتحسينها باستمرار.',
+    ab_name: 'ماسينيسا شابان', ab_role: 'مؤسس Voicely.ai',
+    cta_t: 'احجز مكالمتك الاستكشافية المجانية.', cta_s: 'اختر الوقت الذي يناسبك. في 30 دقيقة ندرس رسائلك ومكالماتك ونريك بالضبط ما يمكن لوكيل الذكاء الاصطناعي أن يتولاه عنك.', bk_1: 'مجانية وبلا أي التزام', bk_2: 'خطة مبنية على عيادتك أو متجرك', bk_3: 'بالعربية أو الفرنسية أو الإنجليزية', cal_fb1: 'التقويم لا يظهر؟', cal_fb2: 'افتح صفحة الحجز', cal_m_t: 'مكالمة استكشافية لمدة 30 دقيقة', cal_m_d: 'مجانية عبر Google Meet. اختر اليوم والوقت المناسبين لك.', cal_m_cta: 'اختر موعداً', b2_pw: 'مدعوم بـ',
+    ft_tag: 'وكلاء ذكاء اصطناعي للأعمال التي تبيع عبر الرسائل والهاتف.', ft_c1: 'المنتج', ft_c2: 'الشركة', ft_c3: 'تواصل', ft_l1: 'مساعد الرسائل', ft_l2: 'الوكلاء الصوتيون', ft_loc: 'وكالة ذكاء اصطناعي',
+    script: [
+      ['p', 'السلام عليكم، كم سعر تبييض الأسنان؟'],
+      ['a', 'وعليكم السلام سارة! سعر التبييض الاحترافي في عيادة سمايل بين 18,000 و25,000 دج حسب الدرجة التي تريدينها. هل هذه أول زيارة لك عندنا؟'],
+      ['p', 'نعم، أول مرة'],
+      ['a', 'أهلاً بك! الزيارة الأولى تشمل فحصاً مجانياً. عندي الخميس 4:00 مساءً أو السبت 10:30 صباحاً. أيهما يناسبك؟', 'lead'],
+      ['p', 'الخميس الساعة 4 من فضلك'],
+      ['card', 'تم تأكيد الموعد|تبييض الأسنان، الخميس 4:00 مساءً|د. أمل، عيادة سمايل'],
+      ['a', 'كل شيء جاهز! سأرسل لك تذكيراً قبل الموعد بيوم. نراك الخميس.', 'book'],
+    ],
+  },
+};
+
+let lang = 'en';
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+function getStoredLang() {
+  const q = new URLSearchParams(location.search).get('lang');
+  if (q === 'ar' || q === 'en') return q;
+  try { return localStorage.getItem('voicely-lang') || 'en'; } catch { return 'en'; }
+}
+function applyLang(l, save) {
+  lang = T[l] ? l : 'en';
+  const d = T[lang];
+  document.documentElement.lang = lang;
+  document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+  document.querySelectorAll('[data-i18n]').forEach(el => { const v = d[el.dataset.i18n]; if (typeof v === 'string') el.textContent = v; });
+  document.querySelectorAll('.lang-toggle').forEach(b => b.setAttribute('aria-label', lang === 'ar' ? 'Switch to English' : 'التبديل إلى العربية'));
+  renderWhy(); renderCases(); renderOffers(); renderResultsCal();
+  if (save) { try { localStorage.setItem('voicely-lang', lang); } catch {} }
+  restartDemo();
+}
+document.querySelectorAll('.lang-toggle').forEach(b => b.addEventListener('click', () => applyLang(lang === 'en' ? 'ar' : 'en', true)));
+
+/* ================= Arrow-fill button: touch press state ================= */
+const ARROWS = "<svg class=\"a1\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M5 12h14M12 5l7 7-7 7\"/></svg><svg class=\"a2\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M5 12h14M12 5l7 7-7 7\"/></svg>";
+document.addEventListener("pointerdown", e => { const b = e.target.closest(".afb"); if (!b || e.pointerType === "mouse") return; clearTimeout(b._t); b.dataset.pressed = "true"; });
+["pointerup", "pointercancel"].forEach(ev => document.addEventListener(ev, e => { const b = e.target.closest(".afb"); if (!b || e.pointerType === "mouse") return; b._t = setTimeout(() => { b.dataset.pressed = "false"; }, 450); }));
+
+/* ================= Rendered sections ================= */
+const check = '<svg class="mt-1 flex-none" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#18C8E8" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>';
+function renderWhy() {
+  $('whyRows').innerHTML = T[lang].why.map(([a, b, c]) => `
+    <tr class="border-t border-white/[.08]">
+      <td class="px-5 py-4 font-semibold">${esc(a)}</td>
+      <td class="px-5 py-4 text-white/45"><span class="flex gap-2"><span class="text-white/30">–</span><span>${esc(b)}</span></span></td>
+      <td class="hl px-5 py-4"><span class="flex gap-2">${check}<span>${esc(c)}</span></span></td>
+    </tr>`).join('');
+}
+function renderCases() {
+  $('cases').innerHTML = T[lang].cases.map(c => `
+    <article class="card lift flex flex-col rounded-2xl p-6">
+      <div class="flex items-baseline justify-between gap-3"><h3 class="font-display text-[1.05rem] font-bold" dir="ltr">${esc(c.n)}</h3><span class="text-end text-xs text-white/40">${esc(c.k)}</span></div>
+      <p class="mt-5 w-max font-display text-4xl font-extrabold grad-text" dir="ltr">${esc(c.stat)}</p>
+      <p class="text-sm text-white/55">${esc(c.unit)}</p>
+      <p class="mt-5 font-semibold">${esc(c.h)}</p>
+      <p class="mt-2 flex-1 text-[.92rem] text-white/55">${esc(c.d)}</p>
+      <ul class="mt-5 flex flex-wrap gap-1.5 text-[.72rem] font-semibold text-white/60">${c.tags.map(t => `<li class="card-2 rounded-md px-2 py-1">${esc(t)}</li>`).join('')}</ul>
+    </article>`).join('');
+}
+function renderOffers() {
+  $('offers').innerHTML = T[lang].offers.map((o, i) => `
+    <article class="${i === 0 ? 'grad-border' : 'card'} lift flex flex-col rounded-2xl p-6" ${i === 0 ? 'style="box-shadow:var(--sh-3)"' : ''}>
+      ${o.badge ? `<span class="w-max rounded-full grad-bg px-2.5 py-0.5 text-[.72rem] font-bold">${esc(o.badge)}</span>` : `<span class="hidden h-[1.4rem] xl:block"></span>`}
+      <h3 class="mt-4 font-display text-lg font-bold">${esc(o.t)}</h3>
+      <ul class="mt-5 grid flex-1 content-start gap-2.5 text-[.88rem] text-white/70">${o.items.map(it => `<li class="flex gap-2">${check}<span>${esc(it)}</span></li>`).join('')}</ul>
+      ${i === 0 ? `<a href="#book" class="afb afb-sm afb-block mt-7"><span class="afb-label">${esc(o.cta)}</span><span class="afb-fill" aria-hidden="true"><span>${esc(o.cta)}</span></span><span class="afb-icon" aria-hidden="true">${ARROWS}</span></a>` : `<a href="#book" class="press btn-ghost mt-7 rounded-xl px-5 py-3 text-center text-sm font-semibold">${esc(o.cta)}</a>`}
+    </article>`).join('');
+}
+
+/* ================= Results calendar ================= */
+// Launch month: 30 days, starts on a Tuesday (2 outside days from the previous month). AI went live on day 4.
+const RC_BOOKED = { 4: 4, 5: 6, 6: 7, 7: 8, 8: 7 }; // day -> appointments booked by AI (total 32)
+const RC_LIVE = 4, RC_LAST = 8, RC_DAYS = 30, RC_OFFSET = 2;
+let rcSel = null;
+const chk = '<svg class="chk" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>';
+function renderResultsCal() {
+  const d = T[lang];
+  $("rcHead").innerHTML = d.rc_week.map(w => `<span>${w}</span>`).join("");
+  let cells = "";
+  for (let i = 0; i < RC_OFFSET; i++) cells += `<button type="button" class="rc-day outside" disabled tabindex="-1">${30 + i}</button>`;
+  for (let day = 1; day <= RC_DAYS; day++) {
+    const n = RC_BOOKED[day];
+    const cls = ["rc-day", n ? "done" : "", day > RC_LAST ? "later" : "", rcSel === day ? "sel" : ""].join(" ");
+    const dis = !n ? (day < RC_LIVE ? "disabled" : (day > RC_LAST ? "" : "")) : "";
+    const label = n ? d.rc_aria.replace("{d}", day).replace("{n}", n) : String(day);
+    cells += `<button type="button" class="${cls}" ${n ? "" : "disabled"} data-day="${day}" aria-pressed="${rcSel === day}" aria-label="${label}">${day}${n ? chk : ""}</button>`;
+  }
+  for (let i = 1; i <= (7 - ((RC_OFFSET + RC_DAYS) % 7)) % 7; i++) cells += `<button type="button" class="rc-day outside" disabled tabindex="-1">${i}</button>`;
+  $("rcGrid").innerHTML = cells;
+  const total = Object.values(RC_BOOKED).reduce((a, b) => a + b, 0);
+  if (rcSel && RC_BOOKED[rcSel]) { $("rcLabel").textContent = d.rc_day.replace("{d}", rcSel); $("rcValue").textContent = RC_BOOKED[rcSel]; }
+  else if (rcSel) { $("rcLabel").textContent = d.rc_day.replace("{d}", rcSel); $("rcValue").textContent = "0"; }
+  else { $("rcLabel").textContent = d.rc_total; $("rcValue").textContent = `${total} / ${Object.keys(RC_BOOKED).length} ${d.rc_days}`; }
+}
+document.addEventListener("click", e => { const b = e.target.closest("#rcGrid .rc-day[data-day]"); if (!b || b.disabled) return; const day = +b.dataset.day; rcSel = rcSel === day ? null : day; renderResultsCal(); });
+
+/* ================= Mobile nav ================= */
+const mbtn = $('mbtn'), mnav = $('mnav');
+mbtn.addEventListener('click', () => { const o = mnav.classList.toggle('open'); mbtn.setAttribute('aria-expanded', o); });
+mnav.querySelectorAll('a').forEach(a => a.addEventListener('click', () => { mnav.classList.remove('open'); mbtn.setAttribute('aria-expanded', false); }));
+
+/* ================= Voice EQ (static art) ================= */
+(function () {
+  const eq = $('voiceEq');
+  for (let i = 0; i < 30; i++) { const s = document.createElement('span'); const h = 14 + Math.abs(Math.sin(i * .6) * Math.cos(i * .23)) * 86;
+    s.className = 'flex-1 rounded-full'; s.style.height = h + '%'; s.style.background = 'linear-gradient(180deg,#18C8E8,#2879DB 55%,#7029C9)'; s.style.opacity = .35 + h / 150; eq.appendChild(s); }
+})();
+
+/* ================= WhatsApp demo ================= */
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const chat = $('chat'), waStatus = $('waStatus');
+let timers = [], clock = 0;
+const time = () => `9:${String(41 + Math.floor(clock / 2)).padStart(2, '0')}`;
+const ticks = '<svg class="inline" width="16" height="10" viewBox="0 0 16 10" fill="none" stroke="#53BDEB" stroke-width="1.6" stroke-linecap="round"><path d="M1 5.5 3.8 8 9 2M6 8l1 .2L13 2"/></svg>';
+function add(node) {
+  chat.appendChild(node);
+  while (chat.scrollHeight > chat.clientHeight + 2 && chat.children.length > 1) chat.firstElementChild.remove();
+  requestAnimationFrame(() => requestAnimationFrame(() => node.classList.add('in')));
+}
+function bubble(who, text) {
+  clock++;
+  const row = document.createElement('div');
+  row.className = 'msg flex ' + (who === 'p' ? 'justify-end' : 'justify-start');
+  row.innerHTML = `<div class="bub ${who === 'p' ? 'wa-out' : 'wa-in'}">${esc(text)}<span class="ms-2 inline-flex translate-y-0.5 items-center gap-0.5 whitespace-nowrap align-bottom text-[10px] text-white/50" dir="ltr">${time()} ${who === 'p' ? ticks : ''}</span></div>`;
+  add(row);
+}
+function card(text) {
+  const [h, l1, l2] = text.split('|');
+  const row = document.createElement('div');
+  row.className = 'msg flex justify-start';
+  row.innerHTML = `<div class="bub wa-in w-[82%] overflow-hidden !p-0"><div class="h-1 grad-bg"></div><div class="px-3 py-2.5"><p class="flex items-center gap-1.5 text-[13px] font-bold"><span class="grid h-4 w-4 place-items-center rounded-full bg-[#25D366]"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#0B141A" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>${esc(h)}</p><p class="mt-0.5 text-[12.5px]">${esc(l1)}</p><p class="text-[11.5px] text-[#8696A0]">${esc(l2)}</p></div><div class="border-t border-white/10 py-2 text-center text-[12.5px] font-semibold text-[#53BDEB]"><svg class="me-1 inline align-[-2px]" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="17" rx="3"/><path d="M16 2v4M8 2v4M3 10h18M12 13v5M9.5 15.5h5"/></svg>${esc(T[lang].wa_add)}</div></div>`;
+  add(row);
+}
+function typing(on) {
+  const t = chat.querySelector('.typing-row'); if (t) t.remove();
+  waStatus.textContent = on ? T[lang].wa_typing : T[lang].wa_status;
+  if (!on) return;
+  const row = document.createElement('div');
+  row.className = 'typing-row msg flex justify-start';
+  row.innerHTML = '<div class="bub wa-in typing !py-2.5"><i></i><i></i><i></i></div>';
+  add(row);
+}
+function restartDemo() {
+  timers.forEach(clearTimeout); timers = []; clock = 0;
+  chat.innerHTML = ''; $('sideLead').classList.remove('in'); $('sideBook').classList.remove('in');
+  waStatus.textContent = T[lang].wa_status;
+  const script = T[lang].script;
+  if (reduce) { script.forEach(([w, t]) => w === 'card' ? card(t) : bubble(w, t)); $('sideLead').classList.add('in'); $('sideBook').classList.add('in'); return; }
+  let at = 700;
+  script.forEach(([who, text, side]) => {
+    if (who === 'p') {
+      timers.push(setTimeout(() => bubble('p', text), at));
+      at += 1300;
+    } else {
+      timers.push(setTimeout(() => typing(true), at));
+      at += Math.min(2600, 900 + text.length * 14);
+      timers.push(setTimeout(() => { typing(false); who === 'card' ? card(text) : bubble('a', text); if (side) $(side === 'lead' ? 'sideLead' : 'sideBook').classList.add('in'); }, at));
+      at += 1500;
+    }
+  });
+  timers.push(setTimeout(restartDemo, at + 6000));
+}
+$('replay').addEventListener('click', restartDemo);
+
+/* ================= 3D hero: coins, phone, scene ================= */
+const COINS = [
+  { s: 'whatsapp',       c: '#25D366', x: -330, y: -330, z: 120,  d: 98,  rx: 14,  ry: -30, glow: 1 },
+  { s: 'instagram',      c: '#E4405F', x: 330,  y: -285, z: 60,   d: 108, rx: -8,  ry: 32 },
+  { s: 'n8n',            c: '#EA4B71', x: -395, y: 235,  z: 30,   d: 112, rx: -12, ry: 26 },
+  { s: 'openai',         c: '#1A1B21', x: 265,  y: 285,  z: 150,  d: 100, rx: 10,  ry: -24, glow: 1 },
+  { s: 'googlecalendar', c: '#4285F4', x: -205, y: 175,  z: 230,  d: 78,  rx: -6,  ry: 34 },
+  { s: 'retell-mark',    c: '#1A1B45', x: 520,  y: -170, z: -230, d: 82,  rx: 8,   ry: -36 },
+  { s: 'messenger',      c: '#0099FF', x: -540, y: -260, z: -260, d: 72,  rx: 12,  ry: 28 },
+  { s: 'shopify',        c: '#5E8E3E', x: 115,  y: -335, z: -300, d: 66,  rx: -14, ry: -18 },
+];
+const stage = $('stage'), scene = $('scene'), phone = $('phone3d'), glare = $('glare'), gshadow = $('groundShadow');
+const coinEls = COINS.map((k, i) => {
+  const el = document.createElement('div');
+  el.className = 'coin' + (k.glow ? ' glow' : '');
+  const t = Math.round(k.d * .13);
+  el.style.cssText = `--d:${k.d}px;--t:${t}px;--c:${k.c}`;
+  let rims = '';
+  for (let j = 0; j <= 8; j++) rims += `<div class="rim" style="transform:translateZ(${(-t / 2 + (t * j) / 8).toFixed(1)}px)"></div>`;
+  const logo = `<svg aria-hidden="true"><use href="#lg-${k.s}"/></svg>`;
+  el.innerHTML = `<div class="body">${rims}<div class="face">${logo}</div><div class="face back">${logo}</div></div>`;
+  $('coins').appendChild(el);
+  return { el, k, ph: i * 1.7 };
+});
+// phone thickness: stacked frame layers behind the screen
+(function () { let e = ''; for (let i = 0; i < 8; i++) e += `<div class="phone-edge" style="transform:translateZ(${6 - i * 2}px)"></div>`; $('phoneEdges').innerHTML = e; })();
+
+let tx = 0, ty = 0, mx = 0, my = 0, heroVisible = true;
+const finePointer = matchMedia('(pointer: fine)').matches;
+if (finePointer) addEventListener('pointermove', e => { tx = (e.clientX / innerWidth - .5) * 2; ty = (e.clientY / innerHeight - .5) * 2; }, { passive: true });
+new IntersectionObserver(([en]) => { heroVisible = en.isIntersecting; if (heroVisible && !reduce) requestAnimationFrame(frame); }).observe(stage);
+
+function render(t) {
+  mx += (tx - mx) * .06; my += (ty - my) * .06;
+  const r = stage.getBoundingClientRect();
+  const p = Math.min(1, Math.max(0, (innerHeight - r.top) / (innerHeight + r.height))) - .45; // scroll position through the stage
+  const W = stage.clientWidth, narrow = W < 700, f = Math.min(1, W / 1100), sf = narrow ? .6 : Math.max(.62, f);
+  scene.style.transform = `rotateY(${(mx * 9).toFixed(2)}deg) rotateX(${(-my * 5).toFixed(2)}deg)`;
+  const fl = Math.sin(t / 1400);
+  phone.style.transform = `translateY(${(fl * 10).toFixed(2)}px) rotateY(${(Math.sin(t / 2600) * 9 + mx * 8).toFixed(2)}deg) rotateX(${(Math.cos(t / 3000) * 3 - my * 4 + p * 26).toFixed(2)}deg) rotateZ(${(Math.sin(t / 3400) * 1.2).toFixed(2)}deg)`;
+  glare.style.setProperty('--ga', `${(105 + mx * 40 + p * 50 + Math.sin(t / 2600) * 12).toFixed(1)}deg`);
+  gshadow.style.transform = `scale(${(1 - fl * .1).toFixed(3)})`; gshadow.style.opacity = (.85 - fl * .15).toFixed(2);
+  coinEls.forEach(({ el, k, ph }) => {
+    const ry = k.ry + Math.sin(t / 2300 + ph) * 26 + mx * 14;
+    const cx = narrow ? Math.sign(k.x) * (W / 2 - 14 - (Math.abs(k.x) > 450 ? 18 : 0)) : k.x * f, cz = narrow ? -160 : k.z;
+    el.style.transform = `translate3d(${cx.toFixed(1)}px, ${(k.y * (narrow ? .9 : f) + Math.sin(t / 1700 + ph) * 10).toFixed(1)}px, ${cz}px) rotateY(${ry.toFixed(2)}deg) rotateX(${(k.rx + Math.cos(t / 2600 + ph) * 12 - my * 6).toFixed(2)}deg) scale(${sf})`;
+    el.style.setProperty('--ga', `${(110 + ry * 1.4).toFixed(1)}deg`);
+  });
+}
+function frame(t) { render(t); if (heroVisible && !reduce) requestAnimationFrame(frame); }
+render(0);
+if (!reduce) requestAnimationFrame(frame);
+
+/* ================= Cal.com booking =================
+   Desktop: inline calendar. Phones: Cal.com squeezes its inline embed, so show a card that opens the booking page. */
+const CAL_URL = "https://cal.com/massinissa-chabane-knsxep/%D9%85%D9%83%D8%A7%D9%84%D9%85%D8%A9-%D8%A7%D8%B3%D8%AA%D9%83%D8%B4%D8%A7%D9%81%D9%8A%D8%A9-%D9%85%D8%AC%D8%A7%D9%86%D9%8A%D8%A9";
+const calMobile = innerWidth < 768;
+if (calMobile) {
+  const box = $("cal-inline"); box.classList.remove("min-h-[640px]");
+  box.innerHTML = `<div class="grid gap-5 p-6 text-center"><span class="mx-auto grid h-14 w-14 place-items-center rounded-2xl grad-bg"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="17" rx="3"/><path d="M16 2v4M8 2v4M3 10h18M8 14h2M14 14h2M8 17.5h2"/></svg></span><p class="font-display text-xl font-bold" data-i18n="cal_m_t"></p><p class="text-sm text-white/60" data-i18n="cal_m_d"></p><a href="${CAL_URL}" target="_blank" rel="noopener" class="afb afb-block"><span class="afb-label" data-i18n="cal_m_cta"></span><span class="afb-fill" aria-hidden="true"><span data-i18n="cal_m_cta"></span></span><span class="afb-icon" aria-hidden="true">${ARROWS}</span></a></div>`;
+}
+(function (C, A, L) { let p = function (a, ar) { a.q.push(ar); }; let d = C.document; C.Cal = C.Cal || function () { let cal = C.Cal; let ar = arguments; if (!cal.loaded) { cal.ns = {}; cal.q = cal.q || []; d.head.appendChild(d.createElement('script')).src = A; cal.loaded = true; } if (ar[0] === L) { const api = function () { p(api, arguments); }; const namespace = ar[1]; api.q = api.q || []; if (typeof namespace === 'string') { cal.ns[namespace] = cal.ns[namespace] || api; p(cal.ns[namespace], ar); p(cal, ['initNamespace', namespace]); } else p(cal, ar); return; } p(cal, ar); }; })(window, 'https://app.cal.com/embed/embed.js', 'init');
+if (!calMobile) {
+Cal('init', 'discovery', { origin: 'https://cal.com' });
+Cal.ns.discovery('inline', {
+  elementOrSelector: '#cal-inline',
+  calLink: 'massinissa-chabane-knsxep/%D9%85%D9%83%D8%A7%D9%84%D9%85%D8%A9-%D8%A7%D8%B3%D8%AA%D9%83%D8%B4%D8%A7%D9%81%D9%8A%D8%A9-%D9%85%D8%AC%D8%A7%D9%86%D9%8A%D8%A9',
+  config: { layout: 'month_view', theme: 'dark' },
+});
+Cal.ns.discovery('ui', { theme: 'dark', cssVarsPerTheme: { dark: { 'cal-brand': '#2879DB' } }, hideEventTypeDetails: false });
+}
+
+applyLang(getStoredLang(), false);
+</script>
+</body>
+</html>

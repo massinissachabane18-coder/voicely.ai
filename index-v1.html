@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Voicely.ai | AI Voice Agents & Automation Agency</title>
+<meta name="description" content="Voicely.ai builds AI voice agents that answer every call, qualify leads and book appointments 24/7.">
+<link rel="icon" href="my_brand_guideline/logoss.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&family=Manrope:wght@400;500;600;700&family=Cairo:wght@600;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          cyan: { DEFAULT: '#18C8E8', soft: '#E3F8FC' },
+          ocean: { DEFAULT: '#2879DB', soft: '#E6F0FB' },
+          violet: { DEFAULT: '#7029C9', soft: '#F0E8FA' },
+          ink: { DEFAULT: '#24252B', 2: '#3A3B43', 3: '#5D5E66' },
+          mist: { DEFAULT: '#A6A7AD', line: '#E4E6EE' },
+          paper: { DEFAULT: '#F6F7FB', 2: '#EEF1F8' },
+        },
+        fontFamily: {
+          display: ['Montserrat', 'Cairo', 'sans-serif'],
+          body: ['Manrope', '"IBM Plex Sans Arabic"', 'sans-serif'],
+        },
+        borderRadius: { '4xl': '2rem' },
+      },
+    },
+  };
+</script>
+<style>
+  :root {
+    --grad: linear-gradient(90deg, #18C8E8 0%, #2879DB 50%, #7029C9 100%);
+    --spring: cubic-bezier(.34, 1.56, .64, 1);
+    --ease-out: cubic-bezier(.22, 1, .36, 1);
+    --sh-1: 0 1px 2px rgba(36, 37, 43, .04), 0 4px 12px -4px rgba(40, 121, 219, .08);
+    --sh-2: 0 1px 2px rgba(40, 121, 219, .06), 0 12px 32px -8px rgba(112, 41, 201, .16), 0 24px 48px -24px rgba(40, 121, 219, .18);
+    --sh-3: 0 2px 4px rgba(40, 121, 219, .06), 0 24px 60px -12px rgba(112, 41, 201, .28), 0 48px 96px -32px rgba(24, 200, 232, .25);
+  }
+  html { scroll-behavior: smooth; scroll-padding-top: 88px; }
+  body { background: #F6F7FB; color: #24252B; line-height: 1.7; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+  h1, h2, h3, .font-display { letter-spacing: -0.03em; line-height: 1.08; }
+  :lang(ar) h1, :lang(ar) h2, :lang(ar) h3, :lang(ar) .font-display { letter-spacing: 0; line-height: 1.3; }
+  :lang(ar) .tracking-brand { letter-spacing: 0; }
+  .tracking-brand { letter-spacing: .32em; }
+
+  .grad-text { background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .grad-bg { background: var(--grad); }
+  [dir="rtl"] .grad-text, [dir="rtl"] .grad-bg { background-image: linear-gradient(270deg, #18C8E8 0%, #2879DB 50%, #7029C9 100%); }
+
+  /* Surfaces: base → elevated → floating */
+  .surface-1 { background: rgba(255, 255, 255, .72); border: 1px solid rgba(255, 255, 255, .9); box-shadow: var(--sh-1); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
+  .surface-2 { background: #fff; border: 1px solid #E9EBF3; box-shadow: var(--sh-2); }
+  .surface-3 { background: rgba(255, 255, 255, .86); border: 1px solid rgba(255, 255, 255, 1); box-shadow: var(--sh-3); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); }
+
+  /* Grain */
+  .grain::after { content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 60; opacity: .05; mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+
+  /* Interactive states: transform + opacity only */
+  .press { transition: transform .45s var(--spring); }
+  .press:hover { transform: translateY(-2px); }
+  .press:active { transform: translateY(0) scale(.97); transition-duration: .12s; }
+  .btn-primary { position: relative; isolation: isolate; color: #fff; background: var(--grad); box-shadow: 0 1px 2px rgba(40, 121, 219, .2), 0 10px 24px -8px rgba(112, 41, 201, .45); }
+  .btn-primary::after { content: ""; position: absolute; inset: 0; border-radius: inherit; z-index: -1; box-shadow: 0 18px 40px -10px rgba(112, 41, 201, .55), 0 6px 16px -6px rgba(24, 200, 232, .5); opacity: 0; transition: opacity .35s var(--ease-out); }
+  .btn-primary:hover::after { opacity: 1; }
+  .btn-ghost { background: #fff; color: #24252B; border: 1px solid #E1E4EE; box-shadow: var(--sh-1); }
+  .lift { transition: transform .5s var(--spring); }
+  .lift:hover { transform: translateY(-4px); }
+  .link-u { position: relative; }
+  .link-u::after { content: ""; position: absolute; inset-inline: 0; bottom: -4px; height: 2px; border-radius: 2px; background: var(--grad); transform: scaleX(0); transform-origin: var(--o, left); transition: transform .4s var(--ease-out); }
+  [dir="rtl"] .link-u::after { --o: right; }
+  .link-u:hover::after, .link-u:focus-visible::after { transform: scaleX(1); }
+  .link-u:active { opacity: .7; }
+  :focus-visible { outline: none; }
+  .ring-f:focus-visible, a:focus-visible, button:focus-visible, summary:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+    box-shadow: 0 0 0 3px #F6F7FB, 0 0 0 5px #2879DB, 0 0 0 7px rgba(112, 41, 201, .25); border-radius: 12px; }
+
+  /* Hero demo */
+  .bars { display: flex; align-items: center; gap: 3px; height: 72px; }
+  .bars span { flex: 1; height: 100%; border-radius: 99px; background: linear-gradient(180deg, #18C8E8, #2879DB 55%, #7029C9); transform: scaleY(.08); transform-origin: center; transition: transform .14s linear, opacity .3s; }
+  .bars.caller span { opacity: .35; }
+  .msg { opacity: 0; transform: translateY(10px); transition: opacity .5s var(--ease-out), transform .6s var(--spring); }
+  .msg.in { opacity: 1; transform: none; }
+  .pulse { position: absolute; inset: 0; border-radius: 999px; background: #7029C9; opacity: 0; animation: pulse 2.4s var(--ease-out) infinite; }
+  .pulse.d2 { animation-delay: 1.2s; }
+  @keyframes pulse { 0% { transform: scale(1); opacity: .35; } 100% { transform: scale(2.1); opacity: 0; } }
+  .typing i { display: inline-block; width: 6px; height: 6px; margin: 0 2px; border-radius: 99px; background: #A6A7AD; animation: dot 1.1s infinite; }
+  .typing i:nth-child(2) { animation-delay: .15s; } .typing i:nth-child(3) { animation-delay: .3s; }
+  @keyframes dot { 0%, 60%, 100% { transform: translateY(0); opacity: .5; } 30% { transform: translateY(-4px); opacity: 1; } }
+
+  /* Hero load sequence (the one orchestrated moment) */
+  .rise { opacity: 0; transform: translateY(18px); animation: rise .9s var(--ease-out) forwards; animation-delay: calc(var(--i, 0) * 90ms + 100ms); }
+  @keyframes rise { to { opacity: 1; transform: none; } }
+  .float { animation: float 7s ease-in-out infinite; }
+  @keyframes float { 50% { transform: translateY(-10px); } }
+
+  /* Marquee */
+  .marquee { animation: marquee 38s linear infinite; }
+  @keyframes marquee { to { transform: translateX(-50%); } }
+
+  /* FAQ */
+  details summary::-webkit-details-marker { display: none; }
+  details .plus { transition: transform .45s var(--spring); }
+  details[open] .plus { transform: rotate(45deg); }
+  details .ans { opacity: 0; transform: translateY(-6px); transition: opacity .35s, transform .45s var(--ease-out); }
+  details[open] .ans { opacity: 1; transform: none; }
+
+  /* Mobile menu */
+  #mnav { opacity: 0; transform: translateY(-8px); pointer-events: none; transition: opacity .25s, transform .4s var(--spring); }
+  #mnav.open { opacity: 1; transform: none; pointer-events: auto; }
+
+  /* Logo icon crop from logoss.png (1376×768; icon ≈ x158–512, y192–556) */
+  .logo-icon { position: relative; overflow: hidden; border-radius: 26%; flex: none; }
+  .logo-icon img { position: absolute; max-width: none; width: calc(var(--s) * 3.887); left: calc(var(--s) * -.446); top: calc(var(--s) * -.542); }
+
+  .field { width: 100%; background: #fff; border: 1px solid #E1E4EE; border-radius: 14px; padding: .8rem 1rem; color: #24252B; transition: border-color .2s; }
+  .field:hover { border-color: #C9CEDD; }
+  .field::placeholder { color: #A6A7AD; }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; scroll-behavior: auto !important; }
+  }
+</style>
+</head>
+<body class="font-body grain">
+
+<!-- ============ NAV ============ -->
+<header class="fixed inset-x-0 top-0 z-50 px-4 pt-4">
+  <nav class="surface-1 mx-auto flex max-w-6xl items-center justify-between rounded-2xl ps-3 pe-3 py-2.5 md:ps-4" aria-label="Main">
+    <a href="#top" class="press flex items-center gap-2.5 rounded-xl p-1" aria-label="Voicely.ai home">
+      <span class="logo-icon h-9 w-9" style="--s:36px"><img src="my_brand_guideline/logoss.png" alt=""></span>
+      <span class="font-display text-[1.15rem] font-extrabold text-ink" dir="ltr">Voicely<span class="text-[.8em] text-ink-3">.ai</span></span>
+    </a>
+    <ul class="hidden items-center gap-7 text-[.92rem] font-medium text-ink-2 lg:flex">
+      <li><a class="link-u" href="#services" data-i18n="nav_services">Services</a></li>
+      <li><a class="link-u" href="#how" data-i18n="nav_how">How it works</a></li>
+      <li><a class="link-u" href="#results" data-i18n="nav_results">Results</a></li>
+      <li><a class="link-u" href="#pricing" data-i18n="nav_pricing">Pricing</a></li>
+      <li><a class="link-u" href="#faq" data-i18n="nav_faq">FAQ</a></li>
+    </ul>
+    <div class="flex items-center gap-2">
+      <button type="button" class="lang-toggle press btn-ghost rounded-xl px-3.5 py-2 text-sm font-semibold" data-i18n="lang_switch" aria-label="Switch language">عربي</button>
+      <a href="#book" class="press btn-primary hidden rounded-xl px-4 py-2 text-sm font-semibold sm:inline-flex" data-i18n="nav_cta">Book a demo</a>
+      <button type="button" id="mbtn" class="press btn-ghost grid h-10 w-10 place-items-center rounded-xl lg:hidden" aria-expanded="false" aria-controls="mnav" aria-label="Menu">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h10"/></svg>
+      </button>
+    </div>
+  </nav>
+  <div id="mnav" class="surface-3 mx-auto mt-2 max-w-6xl rounded-2xl p-3 lg:hidden">
+    <ul class="grid gap-1 text-[.98rem] font-semibold">
+      <li><a class="block rounded-xl px-4 py-3 hover:bg-paper active:opacity-70" href="#services" data-i18n="nav_services">Services</a></li>
+      <li><a class="block rounded-xl px-4 py-3 hover:bg-paper active:opacity-70" href="#how" data-i18n="nav_how">How it works</a></li>
+      <li><a class="block rounded-xl px-4 py-3 hover:bg-paper active:opacity-70" href="#results" data-i18n="nav_results">Results</a></li>
+      <li><a class="block rounded-xl px-4 py-3 hover:bg-paper active:opacity-70" href="#pricing" data-i18n="nav_pricing">Pricing</a></li>
+      <li><a class="block rounded-xl px-4 py-3 hover:bg-paper active:opacity-70" href="#faq" data-i18n="nav_faq">FAQ</a></li>
+      <li class="pt-2"><a class="press btn-primary block rounded-xl px-4 py-3 text-center" href="#book" data-i18n="nav_cta">Book a demo</a></li>
+    </ul>
+  </div>
+</header>
+
+<main id="top">
+
+<!-- ============ HERO ============ -->
+<section class="relative overflow-hidden pb-20 pt-32 md:pb-28 md:pt-40">
+  <!-- layered gradients -->
+  <div aria-hidden="true" class="pointer-events-none absolute inset-0 -z-10"
+       style="background:
+         radial-gradient(42% 50% at 88% 12%, rgba(112,41,201,.18), transparent 70%),
+         radial-gradient(38% 44% at 70% 38%, rgba(24,200,232,.16), transparent 70%),
+         radial-gradient(50% 40% at 8% 0%, rgba(40,121,219,.10), transparent 70%),
+         linear-gradient(180deg, #FAFBFE, #F6F7FB);"></div>
+  <!-- silk ribbon (generated) -->
+  <svg id="ribbon" aria-hidden="true" class="pointer-events-none absolute -z-10 end-[-12%] top-[-4%] h-[70%] w-[85%] opacity-30 md:opacity-80 rtl:-scale-x-100" viewBox="0 0 1000 500" preserveAspectRatio="none"></svg>
+
+  <div class="mx-auto grid max-w-6xl items-center gap-14 px-4 md:px-6 lg:grid-cols-12 lg:gap-10">
+    <div class="lg:col-span-6">
+      <p class="rise tracking-brand mb-6 text-[.8rem] font-medium text-ink-3" style="--i:0" data-i18n="hero_eyebrow">AI voice & automation agency</p>
+      <h1 class="font-display text-[2.6rem] font-extrabold text-ink sm:text-6xl lg:text-[3.9rem]">
+        <span class="rise inline" style="--i:1" data-i18n="hero_t1">Conversations that</span>
+        <span class="rise grad-text inline [-webkit-box-decoration-break:clone] [box-decoration-break:clone]" style="--i:2" data-i18n="hero_t2">move business forward.</span>
+      </h1>
+      <p class="rise mt-6 max-w-[34rem] text-lg text-ink-3" style="--i:3" data-i18n="hero_sub">We build AI voice agents that answer every call, qualify your leads and book appointments straight into your calendar, around the clock and in your customers' language.</p>
+      <div class="rise mt-9 flex flex-wrap items-center gap-3" style="--i:4">
+        <a href="#book" class="press btn-primary inline-flex items-center gap-2 rounded-2xl px-6 py-4 font-semibold">
+          <span data-i18n="hero_cta">Book a free strategy call</span>
+          <svg class="rtl:-scale-x-100" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </a>
+        <a href="#how" class="press btn-ghost inline-flex items-center rounded-2xl px-6 py-4 font-semibold" data-i18n="hero_cta2">See how it works</a>
+      </div>
+      <dl class="rise mt-10 grid max-w-md grid-cols-3 gap-4 border-t border-mist-line pt-6" style="--i:5">
+        <div><dt class="font-display text-xl font-bold text-ink" dir="ltr">4.9/5</dt><dd class="text-sm leading-snug text-ink-3" data-i18n="trust_1">from 60+ clients</dd></div>
+        <div><dt class="font-display text-xl font-bold text-ink" dir="ltr">500k+</dt><dd class="text-sm leading-snug text-ink-3" data-i18n="trust_2">calls handled</dd></div>
+        <div><dt class="font-display text-xl font-bold text-ink" data-i18n="trust_3k">14 days</dt><dd class="text-sm leading-snug text-ink-3" data-i18n="trust_3">from kickoff to live</dd></div>
+      </dl>
+    </div>
+
+    <!-- Live call demo -->
+    <div class="rise lg:col-span-6" style="--i:3">
+      <div class="float relative mx-auto max-w-[30rem]">
+        <div aria-hidden="true" class="absolute -inset-6 -z-10 rounded-[3rem] opacity-60 blur-3xl grad-bg"></div>
+        <div class="surface-3 rounded-4xl p-5 sm:p-6" role="img" aria-label="Animated example of a Voicely AI agent booking an appointment on a live call">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <span class="logo-icon h-11 w-11" style="--s:44px"><img src="my_brand_guideline/logoss.png" alt=""></span>
+              <div class="leading-tight">
+                <p class="font-display text-[.95rem] font-bold text-ink" data-i18n="demo_agent">Riley, front desk agent</p>
+                <p class="text-[.8rem] text-ink-3" data-i18n="demo_biz">Smile Dental Clinic</p>
+              </div>
+            </div>
+            <div class="flex flex-none items-center gap-2 whitespace-nowrap rounded-full bg-paper px-3 py-1.5 text-[.78rem] font-semibold text-ink-2">
+              <span class="relative flex h-2 w-2"><span class="absolute inset-0 animate-ping rounded-full bg-cyan opacity-70"></span><span class="relative h-2 w-2 rounded-full bg-cyan"></span></span>
+              <span class="hidden sm:inline" data-i18n="demo_live">Live call</span> <span id="timer" dir="ltr" class="tabular-nums text-ink-3">00:00</span>
+            </div>
+          </div>
+
+          <div class="mt-5 rounded-3xl bg-paper/80 px-4 py-4">
+            <div id="bars" class="bars" aria-hidden="true"></div>
+            <div class="mt-2 flex items-center justify-between text-[.75rem] font-medium text-ink-3">
+              <span id="speaker" data-who="agent">Voicely AI</span>
+              <span dir="ltr">EN · AR · FR</span>
+            </div>
+          </div>
+
+          <div id="chat" class="mt-4 flex h-[13.5rem] [mask-image:linear-gradient(180deg,transparent,#000_18%)] flex-col justify-end gap-2.5 overflow-hidden text-[.92rem] leading-snug" aria-hidden="true"></div>
+
+          <div class="mt-4 flex items-center justify-between gap-3 border-t border-mist-line pt-4">
+            <div id="booked" class="msg flex items-center gap-2 rounded-xl bg-cyan-soft px-3 py-2 text-[.82rem] font-semibold text-ink">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2879DB" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+              <span data-i18n="demo_booked">Booked: Thu, 4:00 PM</span>
+            </div>
+            <span class="relative grid h-12 w-12 flex-none place-items-center rounded-full grad-bg text-white shadow-[0_10px_24px_-8px_rgba(112,41,201,.6)]">
+              <span class="pulse"></span><span class="pulse d2"></span>
+              <svg class="relative" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TRUSTED ============ -->
+<section class="border-y border-mist-line/70 bg-white/50 py-8" aria-labelledby="trusted-h">
+  <div class="mx-auto max-w-6xl px-4 md:px-6">
+    <p id="trusted-h" class="mb-5 text-center text-sm font-medium text-ink-3" data-i18n="trusted">Already answering calls for clinics, agencies and service businesses</p>
+    <div class="overflow-hidden [mask-image:linear-gradient(90deg,transparent,#000_12%,#000_88%,transparent)]" dir="ltr">
+      <div class="marquee flex w-max gap-14 font-display text-xl font-bold text-mist">
+        <span>Smile Dental</span><span>Atlas Realty</span><span>Keystone Auto</span><span>Medina Clinics</span><span>Lumen Legal</span><span>Harbor Homes</span><span>Nova Fitness</span>
+        <span aria-hidden="true">Smile Dental</span><span aria-hidden="true">Atlas Realty</span><span aria-hidden="true">Keystone Auto</span><span aria-hidden="true">Medina Clinics</span><span aria-hidden="true">Lumen Legal</span><span aria-hidden="true">Harbor Homes</span><span aria-hidden="true">Nova Fitness</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PROBLEM ============ -->
+<section class="py-24 md:py-32">
+  <div class="mx-auto grid max-w-6xl gap-12 px-4 md:px-6 lg:grid-cols-12">
+    <div class="lg:col-span-5">
+      <h2 class="font-display text-3xl font-extrabold text-ink md:text-[2.75rem]" data-i18n="prob_title">Every missed call is a customer who called someone else.</h2>
+      <p class="mt-5 max-w-md text-ink-3" data-i18n="prob_sub">Most businesses lose leads in the gaps: after hours, at lunch, when the line is busy. Voicely closes those gaps with an agent that picks up on the first ring, every time.</p>
+    </div>
+    <div class="grid gap-6 sm:grid-cols-3 lg:col-span-7 lg:gap-8">
+      <div class="border-t-2 border-ink pt-5"><p class="font-display text-5xl font-extrabold text-ink" dir="ltr">62%</p><p class="mt-3 text-[.95rem] text-ink-3" data-i18n="prob_1">of calls to small businesses go unanswered</p></div>
+      <div class="border-t-2 border-ink pt-5"><p class="font-display text-5xl font-extrabold text-ink" dir="ltr">78%</p><p class="mt-3 text-[.95rem] text-ink-3" data-i18n="prob_2">of customers buy from the first business that responds</p></div>
+      <div class="border-t-2 border-ink pt-5"><p class="font-display text-5xl font-extrabold text-ink" dir="ltr" data-i18n="prob_3k">5 min</p><p class="mt-3 text-[.95rem] text-ink-3" data-i18n="prob_3">is all it takes for a hot lead to go cold</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SERVICES ============ -->
+<section id="services" class="relative py-24 md:py-32" aria-labelledby="svc-h">
+  <div aria-hidden="true" class="absolute inset-0 -z-10" style="background: radial-gradient(40% 50% at 0% 40%, rgba(24,200,232,.10), transparent 70%), radial-gradient(40% 50% at 100% 80%, rgba(112,41,201,.09), transparent 70%);"></div>
+  <div class="mx-auto max-w-6xl px-4 md:px-6">
+    <div class="max-w-2xl">
+      <h2 id="svc-h" class="font-display text-3xl font-extrabold text-ink md:text-[2.75rem]" data-i18n="svc_title">What we automate</h2>
+      <p class="mt-4 text-ink-3" data-i18n="svc_sub">Six agents we build and run for you. Start with one, add the rest when you're ready.</p>
+    </div>
+
+    <div class="mt-14 grid gap-6 md:grid-cols-6 md:gap-8">
+      <!-- feature -->
+      <article class="surface-2 lift relative overflow-hidden rounded-4xl p-7 md:col-span-4 md:p-9">
+        <div class="flex h-full flex-col gap-8 md:flex-row md:items-end">
+          <div class="flex-1">
+            <span class="grid h-12 w-12 place-items-center rounded-2xl grad-bg text-white"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg></span>
+            <h3 class="mt-6 font-display text-2xl font-bold text-ink" data-i18n="s1_t">AI voice receptionist</h3>
+            <p class="mt-3 max-w-sm text-ink-3" data-i18n="s1_d">Answers every inbound call in a natural voice, handles common questions and routes urgent calls to the right person on your team.</p>
+          </div>
+          <div class="flex h-28 flex-1 items-center gap-[3px] md:h-36" aria-hidden="true" id="eq"></div>
+        </div>
+      </article>
+      <article class="surface-2 lift rounded-4xl p-7 md:col-span-2">
+        <span class="grid h-11 w-11 place-items-center rounded-2xl bg-ocean-soft text-ocean"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m7 15 4-4 3 3 5-6"/></svg></span>
+        <h3 class="mt-5 font-display text-xl font-bold text-ink" data-i18n="s2_t">Outbound lead qualification</h3>
+        <p class="mt-2.5 text-[.95rem] text-ink-3" data-i18n="s2_d">Calls new leads within seconds, asks your qualifying questions and hands hot prospects to sales.</p>
+      </article>
+      <article class="surface-2 lift rounded-4xl p-7 md:col-span-2">
+        <span class="grid h-11 w-11 place-items-center rounded-2xl bg-violet-soft text-violet"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="3"/><path d="M16 2v4M8 2v4M3 10h18M9 16l2 2 4-4"/></svg></span>
+        <h3 class="mt-5 font-display text-xl font-bold text-ink" data-i18n="s3_t">Appointment booking</h3>
+        <p class="mt-2.5 text-[.95rem] text-ink-3" data-i18n="s3_d">Checks real availability, then books, moves or cancels appointments right in your calendar.</p>
+      </article>
+      <article class="surface-2 lift rounded-4xl p-7 md:col-span-2">
+        <span class="grid h-11 w-11 place-items-center rounded-2xl bg-cyan-soft text-[#0f97b0]"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M8 9h8M8 13h5"/></svg></span>
+        <h3 class="mt-5 font-display text-xl font-bold text-ink" data-i18n="s4_t">Customer support</h3>
+        <p class="mt-2.5 text-[.95rem] text-ink-3" data-i18n="s4_d">Resolves routine requests like order status, opening hours and prices, with no hold music.</p>
+      </article>
+      <article class="surface-2 lift rounded-4xl p-7 md:col-span-2">
+        <span class="grid h-11 w-11 place-items-center rounded-2xl bg-ocean-soft text-ocean"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><circle cx="18" cy="18" r="3"/><path d="M9 6h5a4 4 0 0 1 4 4v5M15 18h-5a4 4 0 0 1-4-4V9"/></svg></span>
+        <h3 class="mt-5 font-display text-xl font-bold text-ink" data-i18n="s5_t">CRM & workflow automation</h3>
+        <p class="mt-2.5 text-[.95rem] text-ink-3" data-i18n="s5_d">Every call is logged, summarised and sent to HubSpot, Google Sheets or any tool through n8n and Make.</p>
+      </article>
+      <article class="surface-2 lift rounded-4xl p-7 md:col-span-6 md:flex md:items-center md:gap-10 md:p-9">
+        <span class="grid h-11 w-11 flex-none place-items-center rounded-2xl bg-violet-soft text-violet"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21l1.6-4.8A9 9 0 1 1 8 19.5z"/></svg></span>
+        <div class="mt-5 md:mt-0 md:flex-1">
+          <h3 class="font-display text-xl font-bold text-ink" data-i18n="s6_t">WhatsApp & chat agents</h3>
+          <p class="mt-2 text-[.95rem] text-ink-3" data-i18n="s6_d">The same agent, with the same knowledge and tone, on WhatsApp, Instagram and your website chat.</p>
+        </div>
+        <a href="#book" class="press btn-ghost mt-6 inline-flex rounded-2xl px-5 py-3 text-sm font-semibold md:mt-0" data-i18n="svc_cta">Talk to us about your use case</a>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ HOW IT WORKS ============ -->
+<section id="how" class="bg-white py-24 md:py-32" aria-labelledby="how-h">
+  <div class="mx-auto max-w-6xl px-4 md:px-6">
+    <h2 id="how-h" class="max-w-2xl font-display text-3xl font-extrabold text-ink md:text-[2.75rem]" data-i18n="how_title">From first call to a live agent in 14 days</h2>
+    <ol class="relative mt-16 grid gap-10 md:grid-cols-4 md:gap-8">
+      <div aria-hidden="true" class="absolute inset-x-0 top-6 hidden h-[2px] rounded-full grad-bg opacity-40 md:block"></div>
+      <li class="relative">
+        <span class="relative grid h-12 w-12 place-items-center rounded-2xl bg-white font-display text-lg font-extrabold text-ocean ring-2 ring-ocean/20" style="box-shadow:var(--sh-2)">1</span>
+        <h3 class="mt-6 font-display text-lg font-bold text-ink" data-i18n="h1_t">Discovery call</h3>
+        <p class="mt-2 text-[.95rem] text-ink-3" data-i18n="h1_d">In 30 minutes we map your calls, scripts and the tools you already use.</p>
+      </li>
+      <li class="relative">
+        <span class="relative grid h-12 w-12 place-items-center rounded-2xl bg-white font-display text-lg font-extrabold text-ocean ring-2 ring-ocean/20" style="box-shadow:var(--sh-2)">2</span>
+        <h3 class="mt-6 font-display text-lg font-bold text-ink" data-i18n="h2_t">Agent build</h3>
+        <p class="mt-2 text-[.95rem] text-ink-3" data-i18n="h2_d">We write the conversation, choose the voice and train it on your business.</p>
+      </li>
+      <li class="relative">
+        <span class="relative grid h-12 w-12 place-items-center rounded-2xl bg-white font-display text-lg font-extrabold text-violet ring-2 ring-violet/20" style="box-shadow:var(--sh-2)">3</span>
+        <h3 class="mt-6 font-display text-lg font-bold text-ink" data-i18n="h3_t">Integrate & test</h3>
+        <p class="mt-2 text-[.95rem] text-ink-3" data-i18n="h3_d">We connect your calendar and CRM, then run hundreds of real test calls.</p>
+      </li>
+      <li class="relative">
+        <span class="relative grid h-12 w-12 place-items-center rounded-2xl grad-bg font-display text-lg font-extrabold text-white" style="box-shadow:var(--sh-2)">4</span>
+        <h3 class="mt-6 font-display text-lg font-bold text-ink" data-i18n="h4_t">Launch & improve</h3>
+        <p class="mt-2 text-[.95rem] text-ink-3" data-i18n="h4_d">Your agent goes live. We review calls every week and keep tuning it.</p>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- ============ SHOWCASE ============ -->
+<section id="demo" class="relative overflow-hidden py-24 md:py-32" aria-labelledby="demo-h">
+  <div aria-hidden="true" class="absolute inset-0 -z-10" style="background: radial-gradient(45% 55% at 85% 50%, rgba(40,121,219,.12), transparent 70%), radial-gradient(30% 40% at 60% 90%, rgba(112,41,201,.10), transparent 70%);"></div>
+  <div class="mx-auto grid max-w-6xl items-center gap-14 px-4 md:px-6 lg:grid-cols-12">
+    <div class="lg:col-span-5">
+      <h2 id="demo-h" class="font-display text-3xl font-extrabold text-ink md:text-[2.75rem]" data-i18n="demo_title">See every conversation, not just the outcome</h2>
+      <p class="mt-5 text-ink-3" data-i18n="demo_sub">Your dashboard shows each call as it happens: who called, what they needed and what the agent did about it.</p>
+      <ul class="mt-8 grid gap-4">
+        <li class="flex gap-3"><span class="mt-1.5 grid h-5 w-5 flex-none place-items-center rounded-full grad-bg"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><span class="text-ink-2" data-i18n="demo_b1">Full transcript and recording for every call</span></li>
+        <li class="flex gap-3"><span class="mt-1.5 grid h-5 w-5 flex-none place-items-center rounded-full grad-bg"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><span class="text-ink-2" data-i18n="demo_b2">Lead score and summary sent to your CRM</span></li>
+        <li class="flex gap-3"><span class="mt-1.5 grid h-5 w-5 flex-none place-items-center rounded-full grad-bg"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><span class="text-ink-2" data-i18n="demo_b3">Bookings and revenue tracked live</span></li>
+        <li class="flex gap-3"><span class="mt-1.5 grid h-5 w-5 flex-none place-items-center rounded-full grad-bg"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><span class="text-ink-2" data-i18n="demo_b4">Instant handoff to a human whenever a caller asks</span></li>
+      </ul>
+    </div>
+
+    <div class="relative lg:col-span-7">
+      <!-- dashboard (elevated) -->
+      <div class="surface-2 overflow-hidden rounded-4xl" dir="ltr">
+        <div class="flex items-center gap-2 border-b border-mist-line px-5 py-3.5">
+          <span class="h-2.5 w-2.5 rounded-full bg-mist-line"></span><span class="h-2.5 w-2.5 rounded-full bg-mist-line"></span><span class="h-2.5 w-2.5 rounded-full bg-mist-line"></span>
+          <span class="ms-3 text-xs font-semibold text-ink-3">app.voicely.ai / overview</span>
+        </div>
+        <div class="grid grid-cols-[56px_1fr]">
+          <div class="flex flex-col items-center gap-3 border-e border-mist-line py-5">
+            <span class="logo-icon h-8 w-8" style="--s:32px"><img src="my_brand_guideline/logoss.png" alt=""></span>
+            <span class="h-8 w-8 rounded-xl bg-ocean-soft"></span><span class="h-8 w-8 rounded-xl bg-paper"></span><span class="h-8 w-8 rounded-xl bg-paper"></span>
+          </div>
+          <div class="p-5">
+            <div class="grid grid-cols-3 gap-3">
+              <div class="rounded-2xl bg-paper p-3.5"><p class="text-[.7rem] font-semibold text-ink-3">Calls today</p><p class="font-display text-2xl font-extrabold text-ink">248</p></div>
+              <div class="rounded-2xl bg-paper p-3.5"><p class="text-[.7rem] font-semibold text-ink-3">Booked</p><p class="font-display text-2xl font-extrabold text-ink">61</p></div>
+              <div class="rounded-2xl bg-paper p-3.5"><p class="text-[.7rem] font-semibold text-ink-3">Answer rate</p><p class="font-display text-2xl font-extrabold grad-text">100%</p></div>
+            </div>
+            <div class="mt-4 rounded-2xl border border-mist-line p-4">
+              <div class="flex items-center justify-between"><p class="text-xs font-bold text-ink">Bookings this week</p><p class="text-[.7rem] font-semibold text-ocean">+38%</p></div>
+              <svg viewBox="0 0 400 110" class="mt-2 h-28 w-full" aria-hidden="true">
+                <defs>
+                  <linearGradient id="lg" x1="0" x2="1"><stop offset="0" stop-color="#18C8E8"/><stop offset=".5" stop-color="#2879DB"/><stop offset="1" stop-color="#7029C9"/></linearGradient>
+                  <linearGradient id="fg" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#2879DB" stop-opacity=".22"/><stop offset="1" stop-color="#2879DB" stop-opacity="0"/></linearGradient>
+                </defs>
+                <path d="M0 88 C40 80 60 70 100 72 S160 50 200 54 S260 30 300 34 S360 12 400 10 V110 H0Z" fill="url(#fg)"/>
+                <path d="M0 88 C40 80 60 70 100 72 S160 50 200 54 S260 30 300 34 S360 12 400 10" fill="none" stroke="url(#lg)" stroke-width="3" stroke-linecap="round"/>
+                <circle cx="400" cy="10" r="0"/>
+              </svg>
+            </div>
+            <ul class="mt-4 grid gap-2 text-[.8rem]">
+              <li class="flex items-center justify-between rounded-xl bg-paper px-3.5 py-2.5"><span class="font-semibold text-ink">Amina K.</span><span class="text-ink-3">New patient, cleaning</span><span class="rounded-full bg-cyan-soft px-2.5 py-0.5 text-[.7rem] font-bold text-[#0f8aa1]">Booked</span></li>
+              <li class="flex items-center justify-between rounded-xl bg-paper px-3.5 py-2.5"><span class="font-semibold text-ink">James O.</span><span class="text-ink-3">Price question</span><span class="rounded-full bg-ocean-soft px-2.5 py-0.5 text-[.7rem] font-bold text-ocean">Answered</span></li>
+              <li class="flex items-center justify-between rounded-xl bg-paper px-3.5 py-2.5"><span class="font-semibold text-ink">Yacine B.</span><span class="text-ink-3">Emergency, tooth pain</span><span class="rounded-full bg-violet-soft px-2.5 py-0.5 text-[.7rem] font-bold text-violet">Transferred</span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <!-- phone (floating) -->
+      <div class="surface-3 absolute -bottom-10 end-[-8px] hidden w-44 rounded-[2rem] p-2 sm:block lg:end-[-28px]" aria-hidden="true">
+        <div class="relative overflow-hidden rounded-[1.6rem] px-4 pb-6 pt-8 text-center text-white" style="background: radial-gradient(80% 60% at 50% 0%, #18C8E8, transparent 70%), linear-gradient(170deg, #2879DB, #3a1d8f 80%);">
+          <span class="logo-icon mx-auto block h-12 w-12" style="--s:48px"><img src="my_brand_guideline/logoss.png" alt=""></span>
+          <p class="mt-3 font-display text-base font-extrabold" dir="ltr">Voicely.ai</p>
+          <p class="text-[.65rem] tracking-[.25em] opacity-80">AI Agency</p>
+          <div class="mx-auto mt-6 flex h-8 items-center justify-center gap-[3px]" id="peq"></div>
+          <span class="mx-auto mt-6 grid h-11 w-11 place-items-center rounded-full bg-white/20"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ RESULTS ============ -->
+<section id="results" class="relative overflow-hidden bg-ink py-24 text-white md:py-32" aria-labelledby="res-h">
+  <div aria-hidden="true" class="absolute inset-0" style="background: radial-gradient(40% 70% at 10% 0%, rgba(24,200,232,.18), transparent 70%), radial-gradient(40% 70% at 95% 100%, rgba(112,41,201,.30), transparent 70%);"></div>
+  <div class="relative mx-auto max-w-6xl px-4 md:px-6">
+    <h2 id="res-h" class="max-w-2xl font-display text-3xl font-extrabold md:text-[2.75rem]" data-i18n="res_title">What clients see in their first 90 days</h2>
+    <dl class="mt-16 grid grid-cols-2 gap-x-6 gap-y-12 md:grid-cols-4 md:gap-8">
+      <div class="border-t border-white/15 pt-6"><dt class="font-display text-5xl font-extrabold grad-text md:text-6xl" dir="ltr"><span class="count" data-to="3">3</span>x</dt><dd class="mt-3 text-white/70" data-i18n="res_1">more booked appointments</dd></div>
+      <div class="border-t border-white/15 pt-6"><dt class="font-display text-5xl font-extrabold grad-text md:text-6xl" dir="ltr"><span class="count" data-to="80">80</span>%</dt><dd class="mt-3 text-white/70" data-i18n="res_2">of calls handled end to end by AI</dd></div>
+      <div class="border-t border-white/15 pt-6"><dt class="font-display text-5xl font-extrabold grad-text md:text-6xl" dir="ltr">&lt;<span class="count" data-to="1">1</span>s</dt><dd class="mt-3 text-white/70" data-i18n="res_3">average time to answer</dd></div>
+      <div class="border-t border-white/15 pt-6"><dt class="font-display text-5xl font-extrabold grad-text md:text-6xl" dir="ltr"><span class="count" data-to="60">60</span>%</dt><dd class="mt-3 text-white/70" data-i18n="res_4">lower cost per call</dd></div>
+    </dl>
+  </div>
+</section>
+
+<!-- ============ TESTIMONIALS ============ -->
+<section class="py-24 md:py-32" aria-labelledby="tst-h">
+  <div class="mx-auto max-w-6xl px-4 md:px-6">
+    <h2 id="tst-h" class="max-w-2xl font-display text-3xl font-extrabold text-ink md:text-[2.75rem]" data-i18n="tst_title">Owners who stopped worrying about the phone</h2>
+    <div class="mt-14 grid gap-6 md:grid-cols-3 md:gap-8">
+      <figure class="surface-2 flex flex-col rounded-4xl p-7 md:translate-y-6">
+        <blockquote class="flex-1 text-[1.05rem] text-ink-2" data-i18n="t1_q">“We used to miss a third of our calls. Now every one gets answered, and the agent books straight into our calendar.”</blockquote>
+        <figcaption class="mt-7 flex items-center gap-3">
+          <span class="relative h-12 w-12 overflow-hidden rounded-full"><img src="https://placehold.co/96x96/E6F0FB/2879DB?text=SB" alt="" class="h-full w-full object-cover"><span class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-40"></span><span class="absolute inset-0 bg-ocean mix-blend-multiply opacity-20"></span></span>
+          <span class="leading-tight"><span class="block font-display font-bold text-ink" data-i18n="t1_n">Dr. Sarah Benali</span><span class="text-sm text-ink-3" data-i18n="t1_r">Owner, Smile Dental Clinic</span></span>
+        </figcaption>
+      </figure>
+      <figure class="surface-2 flex flex-col rounded-4xl p-7">
+        <blockquote class="flex-1 text-[1.05rem] text-ink-2" data-i18n="t2_q">“New leads get a call back in under a minute. My team only talks to buyers who are ready to move.”</blockquote>
+        <figcaption class="mt-7 flex items-center gap-3">
+          <span class="relative h-12 w-12 overflow-hidden rounded-full"><img src="https://placehold.co/96x96/F0E8FA/7029C9?text=KH" alt="" class="h-full w-full object-cover"><span class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-40"></span><span class="absolute inset-0 bg-violet mix-blend-multiply opacity-20"></span></span>
+          <span class="leading-tight"><span class="block font-display font-bold text-ink" data-i18n="t2_n">Karim Haddad</span><span class="text-sm text-ink-3" data-i18n="t2_r">Founder, Atlas Realty</span></span>
+        </figcaption>
+      </figure>
+      <figure class="surface-2 flex flex-col rounded-4xl p-7 md:translate-y-6">
+        <blockquote class="flex-1 text-[1.05rem] text-ink-2" data-i18n="t3_q">“Setup took two weeks. The agent paid for itself in the first month, and our receptionist finally has time for walk-ins.”</blockquote>
+        <figcaption class="mt-7 flex items-center gap-3">
+          <span class="relative h-12 w-12 overflow-hidden rounded-full"><img src="https://placehold.co/96x96/E3F8FC/0f8aa1?text=LM" alt="" class="h-full w-full object-cover"><span class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-40"></span><span class="absolute inset-0 bg-cyan mix-blend-multiply opacity-20"></span></span>
+          <span class="leading-tight"><span class="block font-display font-bold text-ink" data-i18n="t3_n">Lina Moreau</span><span class="text-sm text-ink-3" data-i18n="t3_r">Operations lead, Keystone Auto</span></span>
+        </figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PRICING ============ -->
+<section id="pricing" class="bg-white py-24 md:py-32" aria-labelledby="pr-h">
+  <div class="mx-auto max-w-6xl px-4 md:px-6">
+    <div class="mx-auto max-w-2xl text-center">
+      <h2 id="pr-h" class="font-display text-3xl font-extrabold text-ink md:text-[2.75rem]" data-i18n="pr_title">Plans that grow with your call volume</h2>
+      <p class="mt-4 text-ink-3" data-i18n="pr_sub">Every plan includes setup, voice design and ongoing tuning. No long contracts.</p>
+    </div>
+    <div class="mt-16 grid items-stretch gap-6 md:grid-cols-3 md:gap-8">
+      <!-- Starter -->
+      <div class="flex flex-col rounded-4xl border border-mist-line bg-paper/60 p-8">
+        <h3 class="font-display text-xl font-bold text-ink" data-i18n="p1_n">Starter</h3>
+        <p class="mt-1 text-sm text-ink-3" data-i18n="p1_d">For one location getting started</p>
+        <p class="mt-7 flex items-baseline gap-1"><span class="font-display text-5xl font-extrabold text-ink" dir="ltr">$497</span><span class="text-ink-3" data-i18n="per_mo">/month</span></p>
+        <ul class="mt-7 grid flex-1 content-start gap-3 text-[.95rem] text-ink-2">
+          <li class="flex gap-2.5"><span class="text-ocean">✓</span><span data-i18n="p1_f1">1 AI voice agent</span></li>
+          <li class="flex gap-2.5"><span class="text-ocean">✓</span><span data-i18n="p1_f2">Up to 500 call minutes a month</span></li>
+          <li class="flex gap-2.5"><span class="text-ocean">✓</span><span data-i18n="p1_f3">Calendar booking</span></li>
+          <li class="flex gap-2.5"><span class="text-ocean">✓</span><span data-i18n="p1_f4">Call summaries by email</span></li>
+        </ul>
+        <a href="#book" class="press btn-ghost mt-8 rounded-2xl px-5 py-3.5 text-center font-semibold" data-i18n="pr_cta">Book a demo</a>
+      </div>
+      <!-- Growth -->
+      <div class="relative rounded-4xl p-[2px] grad-bg" style="box-shadow:var(--sh-3)">
+        <div class="flex h-full flex-col rounded-[calc(2rem-2px)] bg-white p-8">
+          <div class="flex items-center justify-between gap-3">
+            <h3 class="font-display text-xl font-bold text-ink" data-i18n="p2_n">Growth</h3>
+            <span class="rounded-full grad-bg px-3 py-1 text-xs font-bold text-white" data-i18n="p2_badge">Most popular</span>
+          </div>
+          <p class="mt-1 text-sm text-ink-3" data-i18n="p2_d">For teams that live on the phone</p>
+          <p class="mt-7 flex items-baseline gap-1"><span class="font-display text-5xl font-extrabold grad-text" dir="ltr">$1,297</span><span class="text-ink-3" data-i18n="per_mo">/month</span></p>
+          <ul class="mt-7 grid flex-1 content-start gap-3 text-[.95rem] text-ink-2">
+            <li class="flex gap-2.5"><span class="text-violet">✓</span><span data-i18n="p2_f1">Up to 3 AI agents</span></li>
+            <li class="flex gap-2.5"><span class="text-violet">✓</span><span data-i18n="p2_f2">2,000 call minutes a month</span></li>
+            <li class="flex gap-2.5"><span class="text-violet">✓</span><span data-i18n="p2_f3">CRM integration</span></li>
+            <li class="flex gap-2.5"><span class="text-violet">✓</span><span data-i18n="p2_f4">WhatsApp agent included</span></li>
+            <li class="flex gap-2.5"><span class="text-violet">✓</span><span data-i18n="p2_f5">Weekly optimisation review</span></li>
+          </ul>
+          <a href="#book" class="press btn-primary mt-8 rounded-2xl px-5 py-3.5 text-center font-semibold" data-i18n="pr_cta">Book a demo</a>
+        </div>
+      </div>
+      <!-- Enterprise -->
+      <div class="flex flex-col rounded-4xl border border-mist-line bg-paper/60 p-8">
+        <h3 class="font-display text-xl font-bold text-ink" data-i18n="p3_n">Enterprise</h3>
+        <p class="mt-1 text-sm text-ink-3" data-i18n="p3_d">For multiple locations and high volume</p>
+        <p class="mt-7 flex items-baseline gap-1"><span class="font-display text-5xl font-extrabold text-ink" data-i18n="p3_price">Custom</span></p>
+        <ul class="mt-7 grid flex-1 content-start gap-3 text-[.95rem] text-ink-2">
+          <li class="flex gap-2.5"><span class="text-ocean">✓</span><span data-i18n="p3_f1">Unlimited agents</span></li>
+          <li class="flex gap-2.5"><span class="text-ocean">✓</span><span data-i18n="p3_f2">Custom minute volume</span></li>
+          <li class="flex gap-2.5"><span class="text-ocean">✓</span><span data-i18n="p3_f3">Dedicated success manager</span></li>
+          <li class="flex gap-2.5"><span class="text-ocean">✓</span><span data-i18n="p3_f4">SLA and priority support</span></li>
+          <li class="flex gap-2.5"><span class="text-ocean">✓</span><span data-i18n="p3_f5">Custom integrations</span></li>
+        </ul>
+        <a href="#book" class="press btn-ghost mt-8 rounded-2xl px-5 py-3.5 text-center font-semibold" data-i18n="pr_cta2">Talk to sales</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FAQ ============ -->
+<section id="faq" class="py-24 md:py-32" aria-labelledby="faq-h">
+  <div class="mx-auto grid max-w-6xl gap-12 px-4 md:px-6 lg:grid-cols-12">
+    <div class="lg:col-span-4">
+      <h2 id="faq-h" class="font-display text-3xl font-extrabold text-ink md:text-[2.75rem]" data-i18n="faq_title">Questions, answered</h2>
+      <p class="mt-4 text-ink-3" data-i18n="faq_sub">Something else on your mind? Ask us on the strategy call.</p>
+    </div>
+    <div class="grid gap-3 lg:col-span-8" id="faqs"></div>
+  </div>
+</section>
+
+<!-- ============ BOOK ============ -->
+<section id="book" class="px-4 pb-24 md:px-6 md:pb-32" aria-labelledby="book-h">
+  <div class="relative mx-auto max-w-6xl overflow-hidden rounded-[2.5rem] grad-bg p-[1px]" style="box-shadow:var(--sh-3)">
+    <div class="relative grid gap-10 overflow-hidden rounded-[calc(2.5rem-1px)] p-7 text-white md:p-12 lg:grid-cols-12 lg:gap-12"
+         style="background: radial-gradient(60% 80% at 0% 0%, #18C8E8 0%, transparent 60%), radial-gradient(70% 90% at 100% 100%, #7029C9 0%, transparent 65%), #2879DB;">
+      <svg aria-hidden="true" class="pointer-events-none absolute -bottom-10 start-0 h-40 w-full opacity-25" viewBox="0 0 600 100" preserveAspectRatio="none" id="bookwave"></svg>
+      <div class="relative lg:col-span-5">
+        <h2 id="book-h" class="font-display text-3xl font-extrabold md:text-[2.75rem]" data-i18n="book_title">Let's build your first AI agent</h2>
+        <p class="mt-5 text-white/85" data-i18n="book_sub">Book a free 30-minute strategy call. We'll show you where automation pays off fastest in your business.</p>
+        <ul class="mt-8 grid gap-3.5 text-white/90">
+          <li class="flex gap-3"><span class="grid h-6 w-6 flex-none place-items-center rounded-full bg-white/20">✓</span><span data-i18n="book_b1">30 minutes, no commitment</span></li>
+          <li class="flex gap-3"><span class="grid h-6 w-6 flex-none place-items-center rounded-full bg-white/20">✓</span><span data-i18n="book_b2">A written automation plan for your business</span></li>
+          <li class="flex gap-3"><span class="grid h-6 w-6 flex-none place-items-center rounded-full bg-white/20">✓</span><span data-i18n="book_b3">A live demo built around your own calls</span></li>
+        </ul>
+      </div>
+      <div class="relative lg:col-span-7">
+        <form id="bookform" class="rounded-3xl bg-white p-6 text-ink md:p-8" style="box-shadow:0 30px 60px -20px rgba(36,37,43,.45)" novalidate>
+          <div class="grid gap-4 sm:grid-cols-2">
+            <label class="grid gap-1.5 text-sm font-semibold"><span data-i18n="f_name">Full name</span><input class="field font-normal" name="name" required autocomplete="name" data-i18n-ph="f_name_ph" placeholder="Sarah Benali"></label>
+            <label class="grid gap-1.5 text-sm font-semibold"><span data-i18n="f_email">Work email</span><input class="field font-normal" type="email" name="email" required autocomplete="email" data-i18n-ph="f_email_ph" placeholder="you@company.com" dir="ltr"></label>
+            <label class="grid gap-1.5 text-sm font-semibold"><span data-i18n="f_company">Company</span><input class="field font-normal" name="company" autocomplete="organization" data-i18n-ph="f_company_ph" placeholder="Smile Dental Clinic"></label>
+            <label class="grid gap-1.5 text-sm font-semibold"><span data-i18n="f_phone">Phone</span><input class="field font-normal" type="tel" name="phone" autocomplete="tel" placeholder="+1 555 000 0000" dir="ltr"></label>
+            <label class="grid gap-1.5 text-sm font-semibold sm:col-span-2"><span data-i18n="f_goal">What do you want to automate?</span>
+              <select class="field font-normal" name="goal">
+                <option data-i18n="f_o1">Inbound calls</option><option data-i18n="f_o2">Outbound lead calls</option><option data-i18n="f_o3">Appointment booking</option><option data-i18n="f_o4">Customer support</option><option data-i18n="f_o5">Something else</option>
+              </select>
+            </label>
+            <label class="grid gap-1.5 text-sm font-semibold sm:col-span-2"><span data-i18n="f_msg">Anything we should know?</span><textarea class="field min-h-[96px] font-normal" name="msg" data-i18n-ph="f_msg_ph" placeholder="Roughly how many calls you get a day, which tools you use…"></textarea></label>
+          </div>
+          <p id="ferr" class="mt-4 hidden text-sm font-semibold text-violet" role="alert" data-i18n="f_err">Add your name and a valid email so we can send you a time.</p>
+          <button type="submit" class="press btn-primary mt-6 w-full rounded-2xl px-6 py-4 font-semibold" data-i18n="f_submit">Book my strategy call</button>
+          <p class="mt-3 text-center text-xs text-ink-3" data-i18n="f_note">We reply within one business day. No spam, ever.</p>
+        </form>
+        <div id="fok" class="hidden rounded-3xl bg-white p-8 text-center text-ink md:p-12" role="status">
+          <span class="mx-auto grid h-14 w-14 place-items-center rounded-full grad-bg text-white"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
+          <h3 class="mt-5 font-display text-2xl font-bold" data-i18n="ok_t">Request received</h3>
+          <p class="mx-auto mt-2 max-w-sm text-ink-3" data-i18n="ok_d">We'll email you within one business day to pick a time for your strategy call.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer class="bg-ink text-white/70">
+  <div class="mx-auto grid max-w-6xl gap-12 px-4 py-16 md:grid-cols-12 md:px-6">
+    <div class="md:col-span-5">
+      <a href="#top" class="press inline-flex items-center gap-3 rounded-xl">
+        <span class="logo-icon h-11 w-11" style="--s:44px"><img src="my_brand_guideline/logoss.png" alt=""></span>
+        <span class="leading-none" dir="ltr"><span class="block font-display text-xl font-extrabold text-white">Voicely<span class="text-[.8em] text-white/60">.ai</span></span><span class="tracking-brand mt-1 block text-[.68rem] text-white/50">AI Agency</span></span>
+      </a>
+      <p class="mt-5 max-w-xs" data-i18n="ft_tag">Conversations that move business forward.</p>
+    </div>
+    <div class="grid grid-cols-2 gap-8 sm:grid-cols-3 md:col-span-7">
+      <div><p class="font-display text-sm font-bold text-white" data-i18n="ft_c1">Services</p><ul class="mt-4 grid gap-2.5 text-sm"><li><a class="link-u hover:text-white" href="#services" data-i18n="s1_t">AI voice receptionist</a></li><li><a class="link-u hover:text-white" href="#services" data-i18n="s3_t">Appointment booking</a></li><li><a class="link-u hover:text-white" href="#services" data-i18n="s6_t">WhatsApp & chat agents</a></li></ul></div>
+      <div><p class="font-display text-sm font-bold text-white" data-i18n="ft_c2">Company</p><ul class="mt-4 grid gap-2.5 text-sm"><li><a class="link-u hover:text-white" href="#how" data-i18n="nav_how">How it works</a></li><li><a class="link-u hover:text-white" href="#pricing" data-i18n="nav_pricing">Pricing</a></li><li><a class="link-u hover:text-white" href="#book" data-i18n="ft_contact">Contact</a></li></ul></div>
+      <div><p class="font-display text-sm font-bold text-white" data-i18n="ft_c3">Follow</p><ul class="mt-4 grid gap-2.5 text-sm" dir="ltr"><li><a class="link-u hover:text-white" href="#">LinkedIn</a></li><li><a class="link-u hover:text-white" href="#">Instagram</a></li><li><a class="link-u hover:text-white" href="#">YouTube</a></li></ul></div>
+    </div>
+  </div>
+  <div class="border-t border-white/10">
+    <div class="mx-auto flex max-w-6xl flex-col gap-2 px-4 py-6 text-xs text-white/45 sm:flex-row sm:justify-between md:px-6">
+      <p><span dir="ltr">© 2026 Voicely.ai.</span> <span data-i18n="ft_rights">All rights reserved.</span></p>
+      <p class="flex gap-5"><a class="link-u hover:text-white" href="#" data-i18n="ft_privacy">Privacy</a><a class="link-u hover:text-white" href="#" data-i18n="ft_terms">Terms</a></p>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ================= i18n ================= */
+const T = {
+  en: {
+    lang_switch: 'عربي',
+    nav_services: 'Services', nav_how: 'How it works', nav_results: 'Results', nav_pricing: 'Pricing', nav_faq: 'FAQ', nav_cta: 'Book a demo',
+    hero_eyebrow: 'AI voice & automation agency',
+    hero_t1: 'Conversations that', hero_t2: 'move business forward.',
+    hero_sub: "We build AI voice agents that answer every call, qualify your leads and book appointments straight into your calendar, around the clock and in your customers' language.",
+    hero_cta: 'Book a free strategy call', hero_cta2: 'See how it works',
+    trust_1: 'from 60+ clients', trust_2: 'calls handled', trust_3k: '14 days', trust_3: 'from kickoff to live',
+    demo_agent: 'Riley, front desk agent', demo_biz: 'Smile Dental Clinic', demo_live: 'Live call', demo_booked: 'Booked: Thu, 4:00 PM',
+    trusted: 'Already answering calls for clinics, agencies and service businesses',
+    prob_title: 'Every missed call is a customer who called someone else.',
+    prob_sub: 'Most businesses lose leads in the gaps: after hours, at lunch, when the line is busy. Voicely closes those gaps with an agent that picks up on the first ring, every time.',
+    prob_1: 'of calls to small businesses go unanswered', prob_2: 'of customers buy from the first business that responds', prob_3k: '5 min', prob_3: 'is all it takes for a hot lead to go cold',
+    svc_title: 'What we automate', svc_sub: "Six agents we build and run for you. Start with one, add the rest when you're ready.", svc_cta: 'Talk to us about your use case',
+    s1_t: 'AI voice receptionist', s1_d: 'Answers every inbound call in a natural voice, handles common questions and routes urgent calls to the right person on your team.',
+    s2_t: 'Outbound lead qualification', s2_d: 'Calls new leads within seconds, asks your qualifying questions and hands hot prospects to sales.',
+    s3_t: 'Appointment booking', s3_d: 'Checks real availability, then books, moves or cancels appointments right in your calendar.',
+    s4_t: 'Customer support', s4_d: 'Resolves routine requests like order status, opening hours and prices, with no hold music.',
+    s5_t: 'CRM & workflow automation', s5_d: 'Every call is logged, summarised and sent to HubSpot, Google Sheets or any tool through n8n and Make.',
+    s6_t: 'WhatsApp & chat agents', s6_d: 'The same agent, with the same knowledge and tone, on WhatsApp, Instagram and your website chat.',
+    how_title: 'From first call to a live agent in 14 days',
+    h1_t: 'Discovery call', h1_d: 'In 30 minutes we map your calls, scripts and the tools you already use.',
+    h2_t: 'Agent build', h2_d: 'We write the conversation, choose the voice and train it on your business.',
+    h3_t: 'Integrate & test', h3_d: 'We connect your calendar and CRM, then run hundreds of real test calls.',
+    h4_t: 'Launch & improve', h4_d: 'Your agent goes live. We review calls every week and keep tuning it.',
+    demo_title: 'See every conversation, not just the outcome', demo_sub: 'Your dashboard shows each call as it happens: who called, what they needed and what the agent did about it.',
+    demo_b1: 'Full transcript and recording for every call', demo_b2: 'Lead score and summary sent to your CRM', demo_b3: 'Bookings and revenue tracked live', demo_b4: 'Instant handoff to a human whenever a caller asks',
+    res_title: 'What clients see in their first 90 days', res_1: 'more booked appointments', res_2: 'of calls handled end to end by AI', res_3: 'average time to answer', res_4: 'lower cost per call',
+    tst_title: 'Owners who stopped worrying about the phone',
+    t1_q: '“We used to miss a third of our calls. Now every one gets answered, and the agent books straight into our calendar.”', t1_n: 'Dr. Sarah Benali', t1_r: 'Owner, Smile Dental Clinic',
+    t2_q: '“New leads get a call back in under a minute. My team only talks to buyers who are ready to move.”', t2_n: 'Karim Haddad', t2_r: 'Founder, Atlas Realty',
+    t3_q: '“Setup took two weeks. The agent paid for itself in the first month, and our receptionist finally has time for walk-ins.”', t3_n: 'Lina Moreau', t3_r: 'Operations lead, Keystone Auto',
+    pr_title: 'Plans that grow with your call volume', pr_sub: 'Every plan includes setup, voice design and ongoing tuning. No long contracts.', per_mo: '/month', pr_cta: 'Book a demo', pr_cta2: 'Talk to sales',
+    p1_n: 'Starter', p1_d: 'For one location getting started', p1_f1: '1 AI voice agent', p1_f2: 'Up to 500 call minutes a month', p1_f3: 'Calendar booking', p1_f4: 'Call summaries by email',
+    p2_n: 'Growth', p2_badge: 'Most popular', p2_d: 'For teams that live on the phone', p2_f1: 'Up to 3 AI agents', p2_f2: '2,000 call minutes a month', p2_f3: 'CRM integration', p2_f4: 'WhatsApp agent included', p2_f5: 'Weekly optimisation review',
+    p3_n: 'Enterprise', p3_d: 'For multiple locations and high volume', p3_price: 'Custom', p3_f1: 'Unlimited agents', p3_f2: 'Custom minute volume', p3_f3: 'Dedicated success manager', p3_f4: 'SLA and priority support', p3_f5: 'Custom integrations',
+    faq_title: 'Questions, answered', faq_sub: 'Something else on your mind? Ask us on the strategy call.',
+    faqs: [
+      ['Will callers know they are talking to AI?', 'Our agents sound natural, with real pauses and a warm tone. We recommend a short disclosure at the start of the call, and most callers simply carry on with their request.'],
+      ['Which languages can the agent speak?', 'English, Arabic, French and more than 20 other languages, including dialects such as Darija. One agent can switch language mid-call when the caller does.'],
+      ['What happens if the AI cannot help?', 'It transfers the call to a person on your team, or takes a detailed message and sends it to you straight away, so nothing falls through the cracks.'],
+      ['How long does setup take?', 'Most agents are live within 14 days of the discovery call. Simple receptionist setups can be ready in under a week.'],
+      ['Which tools do you integrate with?', 'Google Calendar, Calendly, HubSpot, GoHighLevel, Google Sheets, WhatsApp and hundreds more through n8n and Make. If it has an API, we can connect it.'],
+    ],
+    book_title: "Let's build your first AI agent", book_sub: "Book a free 30-minute strategy call. We'll show you where automation pays off fastest in your business.",
+    book_b1: '30 minutes, no commitment', book_b2: 'A written automation plan for your business', book_b3: 'A live demo built around your own calls',
+    f_name: 'Full name', f_name_ph: 'Sarah Benali', f_email: 'Work email', f_email_ph: 'you@company.com', f_company: 'Company', f_company_ph: 'Smile Dental Clinic', f_phone: 'Phone',
+    f_goal: 'What do you want to automate?', f_o1: 'Inbound calls', f_o2: 'Outbound lead calls', f_o3: 'Appointment booking', f_o4: 'Customer support', f_o5: 'Something else',
+    f_msg: 'Anything we should know?', f_msg_ph: 'Roughly how many calls you get a day, which tools you use…',
+    f_err: 'Add your name and a valid email so we can send you a time.', f_submit: 'Book my strategy call', f_note: 'We reply within one business day. No spam, ever.',
+    ok_t: 'Request received', ok_d: "We'll email you within one business day to pick a time for your strategy call.",
+    ft_tag: 'Conversations that move business forward.', ft_c1: 'Services', ft_c2: 'Company', ft_c3: 'Follow', ft_contact: 'Contact', ft_rights: 'All rights reserved.', ft_privacy: 'Privacy', ft_terms: 'Terms',
+    caller: 'Caller',
+    script: [
+      ['a', "Good afternoon, Smile Dental. This is Riley, how can I help?"],
+      ['c', "Hi, I'd like a cleaning. Anything open on Thursday?"],
+      ['a', "Thursday works. I have 2:30 or 4:00 PM. Which suits you?"],
+      ['c', "4 o'clock is perfect."],
+      ['a', "Done. You're booked for Thursday at 4:00 PM. I'll text you a confirmation now."],
+    ],
+  },
+  ar: {
+    lang_switch: 'English',
+    nav_services: 'الخدمات', nav_how: 'كيف نعمل', nav_results: 'النتائج', nav_pricing: 'الأسعار', nav_faq: 'الأسئلة الشائعة', nav_cta: 'احجز عرضاً تجريبياً',
+    hero_eyebrow: 'وكالة ذكاء اصطناعي للصوت والأتمتة',
+    hero_t1: 'محادثات', hero_t2: 'تدفع أعمالك إلى الأمام.',
+    hero_sub: 'نبني وكلاء صوتيين بالذكاء الاصطناعي يردّون على كل مكالمة، ويؤهّلون عملاءك المحتملين، ويحجزون المواعيد مباشرة في تقويمك، على مدار الساعة وبلغة عملائك.',
+    hero_cta: 'احجز مكالمة استراتيجية مجانية', hero_cta2: 'اكتشف كيف نعمل',
+    trust_1: 'من أكثر من 60 عميلاً', trust_2: 'مكالمة تمت معالجتها', trust_3k: '14 يوماً', trust_3: 'من الانطلاق إلى التشغيل',
+    demo_agent: 'ريم، موظفة الاستقبال', demo_biz: 'عيادة سمايل لطب الأسنان', demo_live: 'مكالمة مباشرة', demo_booked: 'تم الحجز: الخميس 4:00 مساءً',
+    trusted: 'يردّ بالفعل على مكالمات العيادات والوكالات وشركات الخدمات',
+    prob_title: 'كل مكالمة فائتة هي عميل اتصل بمنافسك.',
+    prob_sub: 'تخسر معظم الشركات عملاءها في الفجوات: بعد ساعات العمل، وقت الغداء، أو عندما يكون الخط مشغولاً. Voicely يسدّ هذه الفجوات بوكيل يردّ من الرنّة الأولى، في كل مرة.',
+    prob_1: 'من المكالمات إلى الشركات الصغيرة لا يُردّ عليها', prob_2: 'من العملاء يشترون من أول شركة تردّ عليهم', prob_3k: '5 دقائق', prob_3: 'كافية ليفقد العميل المهتم اهتمامه',
+    svc_title: 'ما الذي نؤتمته', svc_sub: 'ستة وكلاء نبنيهم ونديرهم لك. ابدأ بواحد، وأضف البقية متى كنت جاهزاً.', svc_cta: 'حدّثنا عن حالتك',
+    s1_t: 'موظف استقبال صوتي ذكي', s1_d: 'يردّ على كل مكالمة واردة بصوت طبيعي، ويجيب عن الأسئلة الشائعة، ويحوّل المكالمات العاجلة إلى الشخص المناسب في فريقك.',
+    s2_t: 'تأهيل العملاء المحتملين', s2_d: 'يتصل بالعملاء الجدد خلال ثوانٍ، ويطرح أسئلة التأهيل الخاصة بك، ويحوّل العملاء الجادّين إلى فريق المبيعات.',
+    s3_t: 'حجز المواعيد', s3_d: 'يتحقق من الأوقات المتاحة فعلاً، ثم يحجز المواعيد أو يغيّرها أو يلغيها مباشرة في تقويمك.',
+    s4_t: 'خدمة العملاء', s4_d: 'يحلّ الطلبات المتكررة مثل حالة الطلب وساعات العمل والأسعار، دون انتظار.',
+    s5_t: 'أتمتة CRM وسير العمل', s5_d: 'تُسجَّل كل مكالمة وتُلخَّص وتُرسَل إلى HubSpot أو Google Sheets أو أي أداة عبر n8n وMake.',
+    s6_t: 'وكلاء واتساب والدردشة', s6_d: 'الوكيل نفسه، بالمعرفة والأسلوب نفسيهما، على واتساب وإنستغرام ودردشة موقعك.',
+    how_title: 'من أول مكالمة إلى وكيل يعمل خلال 14 يوماً',
+    h1_t: 'مكالمة الاستكشاف', h1_d: 'في 30 دقيقة نرسم خريطة مكالماتك ونصوصك والأدوات التي تستخدمها.',
+    h2_t: 'بناء الوكيل', h2_d: 'نكتب المحادثة، ونختار الصوت، وندرّب الوكيل على تفاصيل عملك.',
+    h3_t: 'الربط والاختبار', h3_d: 'نربط تقويمك ونظام CRM، ثم نُجري مئات المكالمات التجريبية الحقيقية.',
+    h4_t: 'الإطلاق والتحسين', h4_d: 'يبدأ وكيلك العمل. نراجع المكالمات أسبوعياً ونواصل تحسينه.',
+    demo_title: 'شاهد كل محادثة، وليس النتيجة فقط', demo_sub: 'تعرض لوحة التحكم كل مكالمة لحظة حدوثها: من اتصل، وماذا أراد، وماذا فعل الوكيل.',
+    demo_b1: 'نص كامل وتسجيل لكل مكالمة', demo_b2: 'تقييم العميل وملخص المكالمة في نظام CRM', demo_b3: 'متابعة الحجوزات والإيرادات مباشرة', demo_b4: 'تحويل فوري إلى موظف عندما يطلب المتصل ذلك',
+    res_title: 'ما يلاحظه عملاؤنا في أول 90 يوماً', res_1: 'مواعيد محجوزة أكثر', res_2: 'من المكالمات يعالجها الذكاء الاصطناعي بالكامل', res_3: 'متوسط وقت الرد', res_4: 'تكلفة أقل لكل مكالمة',
+    tst_title: 'أصحاب أعمال توقفوا عن القلق بشأن الهاتف',
+    t1_q: '«كنا نفوّت ثلث مكالماتنا. الآن يُردّ على كل مكالمة، ويحجز الوكيل المواعيد مباشرة في تقويمنا.»', t1_n: 'د. سارة بن علي', t1_r: 'مالكة عيادة سمايل لطب الأسنان',
+    t2_q: '«يحصل العملاء الجدد على اتصال خلال أقل من دقيقة. فريقي لا يتحدث إلا مع المشترين الجاهزين.»', t2_n: 'كريم حداد', t2_r: 'مؤسس أطلس العقارية',
+    t3_q: '«استغرق الإعداد أسبوعين. استردّ الوكيل تكلفته في الشهر الأول، وأصبح لدى موظفة الاستقبال وقت للزوار.»', t3_n: 'لينا مورو', t3_r: 'مديرة العمليات، كيستون أوتو',
+    pr_title: 'باقات تنمو مع حجم مكالماتك', pr_sub: 'تشمل كل باقة الإعداد وتصميم الصوت والتحسين المستمر. بلا عقود طويلة.', per_mo: '/شهرياً', pr_cta: 'احجز عرضاً تجريبياً', pr_cta2: 'تواصل مع المبيعات',
+    p1_n: 'البداية', p1_d: 'لفرع واحد يبدأ رحلته', p1_f1: 'وكيل صوتي واحد', p1_f2: 'حتى 500 دقيقة مكالمات شهرياً', p1_f3: 'حجز المواعيد في التقويم', p1_f4: 'ملخصات المكالمات بالبريد',
+    p2_n: 'النمو', p2_badge: 'الأكثر طلباً', p2_d: 'للفرق التي تعتمد على الهاتف', p2_f1: 'حتى 3 وكلاء', p2_f2: '2,000 دقيقة مكالمات شهرياً', p2_f3: 'الربط مع نظام CRM', p2_f4: 'وكيل واتساب مشمول', p2_f5: 'مراجعة تحسين أسبوعية',
+    p3_n: 'المؤسسات', p3_d: 'لعدة فروع وحجم مكالمات كبير', p3_price: 'حسب الطلب', p3_f1: 'وكلاء بلا حدود', p3_f2: 'حجم دقائق مخصص', p3_f3: 'مدير نجاح مخصص', p3_f4: 'اتفاقية مستوى خدمة ودعم أولوية', p3_f5: 'تكاملات مخصصة',
+    faq_title: 'أسئلة وأجوبة', faq_sub: 'لديك سؤال آخر؟ اطرحه علينا خلال المكالمة الاستراتيجية.',
+    faqs: [
+      ['هل سيعرف المتصلون أنهم يتحدثون مع ذكاء اصطناعي؟', 'وكلاؤنا يتحدثون بشكل طبيعي، بوقفات حقيقية ونبرة دافئة. ننصح بتنويه قصير في بداية المكالمة، ومعظم المتصلين يكملون طلبهم ببساطة.'],
+      ['ما اللغات التي يتحدثها الوكيل؟', 'العربية والإنجليزية والفرنسية وأكثر من 20 لغة أخرى، بما في ذلك لهجات مثل الدارجة. ويمكن للوكيل تغيير اللغة أثناء المكالمة إذا غيّرها المتصل.'],
+      ['ماذا يحدث إذا لم يستطع الذكاء الاصطناعي المساعدة؟', 'يحوّل المكالمة إلى أحد أفراد فريقك، أو يأخذ رسالة مفصلة ويرسلها إليك فوراً، فلا يضيع أي طلب.'],
+      ['كم يستغرق الإعداد؟', 'تعمل معظم الوكلاء خلال 14 يوماً من مكالمة الاستكشاف. أما إعدادات الاستقبال البسيطة فقد تكون جاهزة في أقل من أسبوع.'],
+      ['ما الأدوات التي تتكاملون معها؟', 'Google Calendar وCalendly وHubSpot وGoHighLevel وGoogle Sheets وواتساب ومئات الأدوات الأخرى عبر n8n وMake. إن كان لديها واجهة برمجية، يمكننا ربطها.'],
+    ],
+    book_title: 'لنبنِ أول وكيل ذكاء اصطناعي لك', book_sub: 'احجز مكالمة استراتيجية مجانية مدتها 30 دقيقة. سنريك أين تحقق الأتمتة أسرع عائد في عملك.',
+    book_b1: '30 دقيقة، بلا أي التزام', book_b2: 'خطة أتمتة مكتوبة لعملك', book_b3: 'عرض مباشر مبني على مكالماتك',
+    f_name: 'الاسم الكامل', f_name_ph: 'سارة بن علي', f_email: 'البريد الإلكتروني للعمل', f_email_ph: 'you@company.com', f_company: 'الشركة', f_company_ph: 'عيادة سمايل لطب الأسنان', f_phone: 'الهاتف',
+    f_goal: 'ما الذي تريد أتمتته؟', f_o1: 'المكالمات الواردة', f_o2: 'الاتصال بالعملاء المحتملين', f_o3: 'حجز المواعيد', f_o4: 'خدمة العملاء', f_o5: 'شيء آخر',
+    f_msg: 'هل هناك ما يجب أن نعرفه؟', f_msg_ph: 'عدد المكالمات اليومية تقريباً، والأدوات التي تستخدمها…',
+    f_err: 'أضف اسمك وبريداً إلكترونياً صحيحاً لنرسل لك موعداً.', f_submit: 'احجز مكالمتي الاستراتيجية', f_note: 'نردّ خلال يوم عمل واحد. بلا رسائل مزعجة.',
+    ok_t: 'تم استلام طلبك', ok_d: 'سنراسلك خلال يوم عمل واحد لتحديد موعد مكالمتك الاستراتيجية.',
+    ft_tag: 'محادثات تدفع أعمالك إلى الأمام.', ft_c1: 'الخدمات', ft_c2: 'الشركة', ft_c3: 'تابعنا', ft_contact: 'تواصل معنا', ft_rights: 'جميع الحقوق محفوظة.', ft_privacy: 'الخصوصية', ft_terms: 'الشروط',
+    caller: 'المتصل',
+    script: [
+      ['a', 'مساء الخير، عيادة سمايل. معك ريم، كيف أساعدك؟'],
+      ['c', 'مرحباً، أريد موعداً لتنظيف الأسنان. هل يوجد وقت يوم الخميس؟'],
+      ['a', 'نعم، لدينا الساعة 2:30 أو 4:00 مساءً. أيهما يناسبك؟'],
+      ['c', 'الساعة الرابعة ممتازة.'],
+      ['a', 'تم. موعدك يوم الخميس الساعة 4:00 مساءً. سأرسل لك رسالة تأكيد الآن.'],
+    ],
+  },
+};
+
+let lang = 'en';
+function getStoredLang() {
+  const q = new URLSearchParams(location.search).get('lang');
+  if (q === 'ar' || q === 'en') return q;
+  try { return localStorage.getItem('voicely-lang') || 'en'; } catch { return 'en'; }
+}
+function applyLang(l, save) {
+  lang = T[l] ? l : 'en';
+  const d = T[lang];
+  document.documentElement.lang = lang;
+  document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+  document.querySelectorAll('[data-i18n]').forEach(el => { const v = d[el.dataset.i18n]; if (typeof v === 'string') el.textContent = v; });
+  document.querySelectorAll('[data-i18n-ph]').forEach(el => { const v = d[el.dataset.i18nPh]; if (v) el.placeholder = v; });
+  document.querySelectorAll('.lang-toggle').forEach(b => b.setAttribute('aria-label', lang === 'ar' ? 'Switch to English' : 'التبديل إلى العربية'));
+  renderFaq();
+  if (save) { try { localStorage.setItem('voicely-lang', lang); } catch {} }
+  restartDemo();
+}
+document.querySelectorAll('.lang-toggle').forEach(b => b.addEventListener('click', () => applyLang(lang === 'en' ? 'ar' : 'en', true)));
+
+/* ================= FAQ ================= */
+function renderFaq() {
+  const wrap = document.getElementById('faqs');
+  wrap.innerHTML = '';
+  T[lang].faqs.forEach(([q, a], i) => {
+    const d = document.createElement('details');
+    d.className = 'surface-2 group rounded-3xl';
+    if (i === 0) d.open = true;
+    d.innerHTML = `<summary class="flex cursor-pointer list-none items-center justify-between gap-6 rounded-3xl p-6 font-display text-[1.05rem] font-bold text-ink active:opacity-80">
+        <span></span><span class="plus grid h-8 w-8 flex-none place-items-center rounded-full bg-paper text-ocean group-hover:bg-ocean-soft"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span></summary>
+      <p class="ans px-6 pb-6 text-ink-3"></p>`;
+    d.querySelector('summary span').textContent = q;
+    d.querySelector('.ans').textContent = a;
+    wrap.appendChild(d);
+  });
+}
+
+/* ================= Mobile nav ================= */
+const mbtn = document.getElementById('mbtn'), mnav = document.getElementById('mnav');
+mbtn.addEventListener('click', () => { const o = mnav.classList.toggle('open'); mbtn.setAttribute('aria-expanded', o); });
+mnav.querySelectorAll('a').forEach(a => a.addEventListener('click', () => { mnav.classList.remove('open'); mbtn.setAttribute('aria-expanded', false); }));
+
+/* ================= Decorative SVG / bars ================= */
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+(function ribbon() {
+  const svg = document.getElementById('ribbon');
+  const cols = ['#18C8E8', '#2879DB', '#7029C9'];
+  let html = '<defs><linearGradient id="rg" x1="0" x2="1"><stop offset="0" stop-color="#18C8E8"/><stop offset=".5" stop-color="#2879DB"/><stop offset="1" stop-color="#7029C9"/></linearGradient></defs>';
+  for (let i = 0; i < 28; i++) {
+    const t = i / 27, y0 = 330 - i * 4, a = 70 + i * 3, ph = i * .07;
+    const p = [];
+    for (let x = 0; x <= 1000; x += 25) p.push(`${x},${(y0 - x * .22 + Math.sin(x / 160 + ph) * a * .6 + Math.cos(x / 90 + ph * 2) * 14).toFixed(1)}`);
+    html += `<polyline points="${p.join(' ')}" fill="none" stroke="url(#rg)" stroke-width="${i % 6 === 0 ? 1.6 : .8}" opacity="${(.15 + .55 * Math.sin(t * Math.PI)).toFixed(2)}"/>`;
+  }
+  svg.innerHTML = html;
+  const bw = document.getElementById('bookwave'); let b = '';
+  for (let i = 0; i < 14; i++) { const p = []; for (let x = 0; x <= 600; x += 20) p.push(`${x},${(60 + Math.sin(x / 70 + i * .25) * (18 + i * 1.5)).toFixed(1)}`); b += `<polyline points="${p.join(' ')}" fill="none" stroke="#fff" stroke-width=".8"/>`; }
+  bw.innerHTML = b;
+})();
+function makeBars(el, n, cls) { for (let i = 0; i < n; i++) { const s = document.createElement('span'); if (cls) s.className = cls; el.appendChild(s); } return [...el.children]; }
+// static equalizer art in services feature + phone
+(function () {
+  const eq = document.getElementById('eq');
+  for (let i = 0; i < 34; i++) { const s = document.createElement('span'); const h = 18 + Math.abs(Math.sin(i * .55) * Math.cos(i * .21)) * 82;
+    s.className = 'flex-1 rounded-full'; s.style.height = h + '%'; s.style.background = 'linear-gradient(180deg,#18C8E8,#2879DB 55%,#7029C9)'; s.style.opacity = .35 + h / 160; eq.appendChild(s); }
+  const peq = document.getElementById('peq');
+  for (let i = 0; i < 14; i++) { const s = document.createElement('span'); s.className = 'w-[3px] rounded-full bg-white/80'; s.style.height = (25 + Math.abs(Math.sin(i * .9)) * 75) + '%'; peq.appendChild(s); }
+})();
+
+/* ================= Hero live-call demo ================= */
+const barsEl = document.getElementById('bars');
+const bars = makeBars(barsEl, 42);
+const chat = document.getElementById('chat'), speaker = document.getElementById('speaker'), booked = document.getElementById('booked'), timerEl = document.getElementById('timer');
+let speaking = null, demoTimers = [], t0 = Date.now();
+function animateBars() {
+  const now = performance.now();
+  bars.forEach((b, i) => {
+    let v = .08;
+    if (speaking) {
+      const env = Math.sin((i / bars.length) * Math.PI);
+      v = .12 + env * (.45 + .45 * Math.abs(Math.sin(now / 110 + i * .7) * Math.cos(now / 170 + i * .33)));
+      if (speaking === 'c') v *= .7;
+    } else v = .08 + .04 * Math.sin(now / 400 + i * .5);
+    b.style.transform = `scaleY(${v.toFixed(3)})`;
+  });
+  if (!reduce) requestAnimationFrame(animateBars);
+}
+function bubble(who, text) {
+  const d = T[lang];
+  const row = document.createElement('div');
+  row.className = 'msg flex ' + (who === 'a' ? 'justify-start' : 'justify-end');
+  const b = document.createElement('div');
+  b.className = who === 'a'
+    ? 'max-w-[85%] rounded-2xl rounded-ss-md bg-white px-3.5 py-2.5 text-ink shadow-[0_1px_2px_rgba(36,37,43,.05),0_6px_16px_-8px_rgba(40,121,219,.25)]'
+    : 'max-w-[85%] rounded-2xl rounded-se-md grad-bg px-3.5 py-2.5 text-white';
+  const lab = document.createElement('span');
+  lab.className = 'mb-0.5 block text-[.68rem] font-bold ' + (who === 'a' ? 'text-ocean' : 'text-white/75');
+  lab.textContent = who === 'a' ? 'Voicely AI' : d.caller;
+  b.append(lab, document.createTextNode(text));
+  row.appendChild(b);
+  chat.appendChild(row);
+  while (chat.children.length > 3) chat.firstElementChild.remove();
+  requestAnimationFrame(() => requestAnimationFrame(() => row.classList.add('in')));
+}
+function restartDemo() {
+  demoTimers.forEach(clearTimeout); demoTimers = [];
+  chat.innerHTML = ''; booked.classList.remove('in'); t0 = Date.now();
+  const script = T[lang].script;
+  if (reduce) { script.slice(-3).forEach(([w, t]) => bubble(w, t)); booked.classList.add('in'); bars.forEach((b, i) => b.style.transform = `scaleY(${(.15 + .6 * Math.sin(i / bars.length * Math.PI)).toFixed(2)})`); return; }
+  let at = 600;
+  script.forEach(([who, text]) => {
+    const dur = Math.max(1600, text.length * 42);
+    demoTimers.push(setTimeout(() => {
+      speaking = who; barsEl.classList.toggle('caller', who === 'c');
+      speaker.textContent = who === 'a' ? 'Voicely AI' : T[lang].caller;
+      bubble(who, text);
+    }, at));
+    at += dur;
+    demoTimers.push(setTimeout(() => { speaking = null; }, at - 250));
+    at += 450;
+  });
+  demoTimers.push(setTimeout(() => booked.classList.add('in'), at));
+  demoTimers.push(setTimeout(restartDemo, at + 4200));
+}
+setInterval(() => { const s = Math.floor((Date.now() - t0) / 1000); timerEl.textContent = `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`; }, 500);
+if (!reduce) requestAnimationFrame(animateBars);
+
+/* ================= Count-up ================= */
+const io = new IntersectionObserver(es => es.forEach(e => {
+  if (!e.isIntersecting) return; io.unobserve(e.target);
+  const el = e.target, to = +el.dataset.to, start = performance.now(), dur = reduce ? 1 : 1400;
+  const step = () => { const p = Math.min(1, Math.max(0, (performance.now() - start) / dur)), k = 1 - Math.pow(1 - p, 4); el.textContent = Math.round(to * k); if (p < 1) requestAnimationFrame(step); };
+  requestAnimationFrame(step);
+  setTimeout(() => { el.textContent = to; }, dur + 300); // guarantee final value
+}), { threshold: .5 });
+document.querySelectorAll('.count').forEach(el => io.observe(el));
+
+/* ================= Form ================= */
+document.getElementById('bookform').addEventListener('submit', e => {
+  e.preventDefault();
+  const f = e.target, ok = f.name.value.trim() && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(f.email.value.trim());
+  document.getElementById('ferr').classList.toggle('hidden', !!ok);
+  if (!ok) { (f.name.value.trim() ? f.email : f.name).focus(); return; }
+  // Hook up to Calendly / n8n webhook here.
+  f.classList.add('hidden');
+  const okEl = document.getElementById('fok'); okEl.classList.remove('hidden'); okEl.focus?.();
+});
+
+applyLang(getStoredLang(), false);
+</script>
+</body>
+</html>
